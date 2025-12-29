@@ -1,7 +1,11 @@
-# 🧠 Quiz AI Platform - Backend
+# 🧠 Quiz AI Platform
 
-![Python](https://img.shields.io/badge/python-3.13-blue) ![Django](https://img.shields.io/badge/django-5.0-green) ![Postman](https://img.shields.io/badge/postman-tested-orange)
+![Python](https://img.shields.io/badge/python-3.13-blue) ![Django](https://img.shields.io/badge/django-5.0-green) ![Next.js](https://img.shields.io/badge/next.js-14.0-blueviolet) ![Postman](https://img.shields.io/badge/postman-tested-orange)
 
+Cette plateforme combine un **backend Django REST** et un **frontend Next.js** pour gérer des notes et générer des quiz intelligents.
+
+
+## Backend (Django)
 Backend Django REST pour **Quiz AI Platform**, permettant de :
 
 - Générer des quiz automatiquement à partir de notes uploadées
@@ -23,29 +27,29 @@ venv\Scripts\activate # Windows
 source venv/bin/activate # Linux/macOS
 pip install -r requirements.txt
 
-Créer un fichier .env à la racine :
+## Créer un fichier .env à la racine :
 SECRET_KEY=<votre_secret_key_django>
 DEBUG=True
 DATABASE_URL=<url_de_votre_base_de_donnees>
 GOOGLE_API_KEY=<votre_cle_api_google_genai>
 
-Appliquer les migrations et créer un super utilisateur :
+## Appliquer les migrations et créer un super utilisateur :
 python manage.py migrate
 python manage.py createsuperuser
 
-Lancer le serveur :
+## Lancer le serveur :
 python manage.py runserver
 
 🔗 Endpoints principaux
-Authentification
+## Authentification
 POST /api/auth/login/ → obtenir token JWT
 POST /api/auth/register/ → créer un utilisateur
 
-Notes
+## Notes
 GET /api/notes/list → lister toutes les notes
 POST /api/notes/upload/ → uploader une note
 
-Quiz
+## Quiz
 POST /api/quiz/generer/ → générer un quiz
 Body JSON :
 {
@@ -71,5 +75,35 @@ backend/
 ├─ manage.py
 └─ requirements.txt
 
-🛡 License
-MIT License
+## Frontend (Next.js)
+
+Le frontend est développé avec Next.js et permet aux utilisateurs :
+De s’inscrire et se connecter
+De consulter les notes et quiz disponibles
+De participer aux quiz en temps réel
+De visualiser les résultats des quiz
+
+## Démarrage
+cd frontend
+npm install
+npm run dev
+
+Accéder au frontend : http://localhost:3000
+
+## À propos du projet
+Bootstrappé avec create-next-app
+Les fichiers API sont dans pages/api/ et sont mappés sur /api/*
+Le projet utilise next/font
+pour optimiser et charger les polices
+
+## Documentation et ressources
+Next.js Documentation
+Learn Next.js
+Déploiement sur Vercel
+
+## Structure du projet complet
+
+quiz_ai_platform/
+├─ backend/      # Code Django (API)
+├─ frontend/     # Code Next.js (UI)
+├─ README.md     # Ce fichier
