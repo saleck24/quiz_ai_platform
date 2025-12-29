@@ -75,13 +75,17 @@ backend/
 ├─ manage.py
 └─ requirements.txt
 
+---
+
 ## Frontend (Next.js)
 
-Le frontend est développé avec Next.js et permet aux utilisateurs :
-De s’inscrire et se connecter
-De consulter les notes et quiz disponibles
-De participer aux quiz en temps réel
-De visualiser les résultats des quiz
+Frontend Next.js pour **Quiz AI Platform**, permettant aux utilisateurs de :
+
+- S’inscrire et se connecter
+- Consulter les notes et les quiz disponibles
+- Participer aux quiz en temps réel
+- Visualiser les résultats des quiz
+- Naviguer facilement grâce à une interface réactive et moderne
 
 ## Démarrage
 cd frontend
