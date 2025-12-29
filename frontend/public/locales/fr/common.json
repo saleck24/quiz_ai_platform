@@ -1,0 +1,181 @@
+{
+    "common": {
+        "appName": "QuizGenius",
+        "login": "Connexion",
+        "register": "S'inscrire",
+        "logout": "Déconnexion",
+        "dashboard": "Tableau de bord",
+        "documents": "Documents",
+        "upload": "Téléverser",
+        "quiz": "Quiz",
+        "generate": "Générer",
+        "share": "Partager",
+        "settings": "Paramètres",
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "delete": "Supprimer",
+        "edit": "Modifier",
+        "search": "Rechercher",
+        "loading": "Chargement...",
+        "error": "Erreur",
+        "success": "Succès"
+    },
+    "landing": {
+        "hero": {
+            "title": "Transformez vos notes en",
+            "titleHighlight": "Quiz interactifs",
+            "subtitle": "Téléversez n'importe quel document et laissez notre IA générer des quiz personnalisés et adaptatifs. Apprenez plus intelligemment.",
+            "cta": "Commencer maintenant",
+            "existingUser": "J'ai un compte"
+        },
+        "badge": "Propulsé par l'IA avancée",
+        "features": {
+            "title": "Tout ce dont vous avez besoin pour exceller",
+            "subtitle": "Des fonctionnalités puissantes conçues pour booster votre apprentissage",
+            "security": {
+                "title": "Sécurité entreprise",
+                "description": "Vos données protégées avec un chiffrement bancaire et des contrôles d'accès stricts."
+            },
+            "uploads": {
+                "title": "Téléversements intelligents",
+                "description": "Support des fichiers PDF, DOCX et TXT avec extraction intelligente du texte."
+            },
+            "ai": {
+                "title": "IA adaptative",
+                "description": "Des quiz qui s'ajustent à votre niveau pour un apprentissage optimal."
+            },
+            "sharing": {
+                "title": "Partage facile",
+                "description": "Partagez des quiz avec des liens temporaires qui expirent pour la sécurité."
+            }
+        },
+        "cta": {
+            "title": "Prêt à réussir vos examens ?",
+            "subtitle": "Rejoignez des milliers d'étudiants qui apprennent plus intelligemment avec QuizGenius.",
+            "button": "Commencer gratuitement"
+        }
+    },
+    "auth": {
+        "welcomeBack": "Bon retour",
+        "enterCredentials": "Entrez vos identifiants pour accéder à votre compte",
+        "email": "Email",
+        "password": "Mot de passe",
+        "confirmPassword": "Confirmer le mot de passe",
+        "fullName": "Nom complet",
+        "forgotPassword": "Oublié ?",
+        "signIn": "Se connecter",
+        "signingIn": "Connexion...",
+        "createAccount": "Créer un compte",
+        "creatingAccount": "Création...",
+        "noAccount": "Pas de compte ?",
+        "hasAccount": "Déjà un compte ?",
+        "createFree": "Créez-en un gratuitement",
+        "resetPassword": "Réinitialiser le mot de passe",
+        "resetSubtitle": "Entrez votre email et nous vous enverrons un lien de réinitialisation",
+        "sendResetLink": "Envoyer le lien",
+        "backToLogin": "Retour à la connexion",
+        "checkEmail": "Vérifiez votre email",
+        "resetLinkSent": "Nous avons envoyé un lien de réinitialisation à",
+        "passwordRequirements": {
+            "length": "Au moins 10 caractères",
+            "uppercase": "Une lettre majuscule",
+            "number": "Un chiffre",
+            "special": "Un caractère spécial"
+        }
+    },
+    "dashboard": {
+        "welcome": "Bon retour",
+        "subtitle": "Voici ce qui se passe dans votre parcours d'apprentissage.",
+        "stats": {
+            "documents": "Documents",
+            "quizzesTaken": "Quiz effectués",
+            "averageScore": "Score moyen",
+            "studyTime": "Temps d'étude",
+            "thisWeek": "Cette semaine"
+        },
+        "cta": {
+            "title": "Prêt pour un nouveau défi ?",
+            "subtitle": "Téléversez vos supports d'étude et laissez l'IA créer des quiz personnalisés adaptés à vos besoins.",
+            "uploadDocument": "Téléverser un document",
+            "generateQuiz": "Générer un quiz"
+        },
+        "recentActivity": "Activité récente",
+        "recentDocuments": "Documents récents",
+        "viewAll": "Voir tout"
+    },
+    "documents": {
+        "title": "Documents",
+        "subtitle": "Gérez vos supports d'étude téléversés",
+        "uploadNew": "Nouveau téléversement",
+        "searchPlaceholder": "Rechercher des documents...",
+        "pages": "pages",
+        "upload": {
+            "title": "Téléverser un document",
+            "subtitle": "Téléversez vos supports pour générer des quiz par IA",
+            "dropHere": "Déposez votre fichier ici",
+            "orClick": "ou cliquez pour parcourir votre ordinateur",
+            "browseFiles": "Parcourir les fichiers",
+            "supported": "Supportés : PDF, DOCX, TXT (Max 10MB)",
+            "documentTitle": "Titre du document",
+            "titlePlaceholder": "Entrez un titre pour ce document",
+            "uploadButton": "Téléverser le document",
+            "uploading": "Téléversement...",
+            "success": "Téléversement réussi !",
+            "successMessage": "Votre document est en cours de traitement. Vous pouvez maintenant générer des quiz.",
+            "uploadAnother": "Téléverser un autre"
+        }
+    },
+    "quiz": {
+        "generate": {
+            "title": "Générer un nouveau quiz",
+            "subtitle": "Créez un quiz par IA à partir de vos supports d'étude",
+            "selectDocument": "Sélectionner un document",
+            "selectDocumentDesc": "Choisissez le matériel source pour votre quiz",
+            "difficulty": "Niveau de difficulté",
+            "easy": "Facile",
+            "medium": "Moyen",
+            "hard": "Difficile",
+            "basicConcepts": "Concepts de base",
+            "standardDifficulty": "Difficulté standard",
+            "advancedTopics": "Sujets avancés",
+            "numberOfQuestions": "Nombre de questions",
+            "summary": "Résumé du quiz",
+            "configuration": "Configuration",
+            "document": "Document",
+            "notSelected": "Non sélectionné",
+            "questions": "Questions",
+            "generateQuiz": "Générer le quiz",
+            "generating": "Génération..."
+        },
+        "taking": {
+            "questionOf": "Question {{current}} sur {{total}}",
+            "checkAnswer": "Vérifier la réponse",
+            "nextQuestion": "Question suivante",
+            "viewResults": "Voir les résultats",
+            "correct": "Correct !",
+            "correctMessage": "Bravo ! Vous avez bien répondu.",
+            "incorrect": "Pas tout à fait",
+            "correctAnswerIs": "La bonne réponse est :"
+        },
+        "results": {
+            "title": "Quiz terminé !",
+            "yourScore": "Votre score",
+            "backToDashboard": "Retour au tableau de bord",
+            "tryAgain": "Essayer un autre quiz"
+        }
+    },
+    "share": {
+        "title": "Liens partagés",
+        "subtitle": "Gérez vos liens de partage de quiz",
+        "createNew": "Créer un nouveau lien",
+        "totalLinks": "Total des liens",
+        "totalViews": "Total des vues",
+        "activeLinks": "Liens actifs",
+        "yourLinks": "Vos liens partagés",
+        "linksDescription": "Cliquez pour copier le lien ou gérer les paramètres de partage",
+        "views": "vues",
+        "expires": "expire",
+        "expired": "Expiré",
+        "copied": "Copié !"
+    }
+}

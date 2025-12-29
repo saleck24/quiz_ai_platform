@@ -1,0 +1,181 @@
+{
+    "common": {
+        "appName": "QuizGenius",
+        "login": "تسجيل الدخول",
+        "register": "إنشاء حساب",
+        "logout": "تسجيل الخروج",
+        "dashboard": "لوحة التحكم",
+        "documents": "المستندات",
+        "upload": "رفع",
+        "quiz": "اختبار",
+        "generate": "توليد",
+        "share": "مشاركة",
+        "settings": "الإعدادات",
+        "save": "حفظ",
+        "cancel": "إلغاء",
+        "delete": "حذف",
+        "edit": "تعديل",
+        "search": "بحث",
+        "loading": "جاري التحميل...",
+        "error": "خطأ",
+        "success": "نجاح"
+    },
+    "landing": {
+        "hero": {
+            "title": "حوّل ملاحظاتك إلى",
+            "titleHighlight": "اختبارات تفاعلية",
+            "subtitle": "ارفع أي مستند ودع الذكاء الاصطناعي يُنشئ اختبارات مخصصة وتكيفية. تعلّم بذكاء، لا بجهد.",
+            "cta": "ابدأ التعلم الآن",
+            "existingUser": "لدي حساب"
+        },
+        "badge": "مدعوم بالذكاء الاصطناعي المتقدم",
+        "features": {
+            "title": "كل ما تحتاجه للتفوق",
+            "subtitle": "ميزات قوية مصممة لتعزيز تجربة التعلم الخاصة بك",
+            "security": {
+                "title": "أمان على مستوى المؤسسات",
+                "description": "بياناتك محمية بتشفير على مستوى البنوك وضوابط وصول صارمة."
+            },
+            "uploads": {
+                "title": "رفع ذكي",
+                "description": "دعم ملفات PDF و DOCX و TXT مع استخراج ذكي للنص."
+            },
+            "ai": {
+                "title": "ذكاء اصطناعي تكيفي",
+                "description": "اختبارات تتكيف مع مستوى مهاراتك للتعلم الأمثل."
+            },
+            "sharing": {
+                "title": "مشاركة سهلة",
+                "description": "شارك الاختبارات بروابط مؤقتة تنتهي صلاحيتها للأمان."
+            }
+        },
+        "cta": {
+            "title": "مستعد للتفوق في امتحاناتك؟",
+            "subtitle": "انضم لآلاف الطلاب الذين يتعلمون بشكل أذكى مع QuizGenius.",
+            "button": "ابدأ مجاناً"
+        }
+    },
+    "auth": {
+        "welcomeBack": "مرحباً بعودتك",
+        "enterCredentials": "أدخل بياناتك للوصول إلى حسابك",
+        "email": "البريد الإلكتروني",
+        "password": "كلمة المرور",
+        "confirmPassword": "تأكيد كلمة المرور",
+        "fullName": "الاسم الكامل",
+        "forgotPassword": "نسيت؟",
+        "signIn": "تسجيل الدخول",
+        "signingIn": "جاري الدخول...",
+        "createAccount": "إنشاء حساب",
+        "creatingAccount": "جاري الإنشاء...",
+        "noAccount": "ليس لديك حساب؟",
+        "hasAccount": "لديك حساب بالفعل؟",
+        "createFree": "أنشئ حساباً مجاناً",
+        "resetPassword": "استعادة كلمة المرور",
+        "resetSubtitle": "أدخل بريدك وسنرسل لك رابط الاستعادة",
+        "sendResetLink": "إرسال رابط الاستعادة",
+        "backToLogin": "العودة لتسجيل الدخول",
+        "checkEmail": "تحقق من بريدك",
+        "resetLinkSent": "لقد أرسلنا رابط استعادة كلمة المرور إلى",
+        "passwordRequirements": {
+            "length": "10 أحرف على الأقل",
+            "uppercase": "حرف كبير واحد",
+            "number": "رقم واحد",
+            "special": "رمز خاص واحد"
+        }
+    },
+    "dashboard": {
+        "welcome": "مرحباً بعودتك",
+        "subtitle": "إليك ما يحدث في رحلة تعلمك.",
+        "stats": {
+            "documents": "المستندات",
+            "quizzesTaken": "الاختبارات المُنجزة",
+            "averageScore": "متوسط الدرجات",
+            "studyTime": "وقت الدراسة",
+            "thisWeek": "هذا الأسبوع"
+        },
+        "cta": {
+            "title": "مستعد لتحدٍ جديد؟",
+            "subtitle": "ارفع موادك الدراسية ودع الذكاء الاصطناعي يُنشئ اختبارات مخصصة لاحتياجاتك التعليمية.",
+            "uploadDocument": "رفع مستند",
+            "generateQuiz": "توليد اختبار"
+        },
+        "recentActivity": "النشاط الأخير",
+        "recentDocuments": "المستندات الأخيرة",
+        "viewAll": "عرض الكل"
+    },
+    "documents": {
+        "title": "المستندات",
+        "subtitle": "إدارة المواد الدراسية المرفوعة",
+        "uploadNew": "رفع جديد",
+        "searchPlaceholder": "البحث في المستندات...",
+        "pages": "صفحات",
+        "upload": {
+            "title": "رفع مستند",
+            "subtitle": "ارفع موادك الدراسية لتوليد اختبارات بالذكاء الاصطناعي",
+            "dropHere": "أسقط ملفك هنا",
+            "orClick": "أو انقر للتصفح من جهازك",
+            "browseFiles": "تصفح الملفات",
+            "supported": "المدعوم: PDF, DOCX, TXT (حد أقصى 10MB)",
+            "documentTitle": "عنوان المستند",
+            "titlePlaceholder": "أدخل عنواناً لهذا المستند",
+            "uploadButton": "رفع المستند",
+            "uploading": "جاري الرفع...",
+            "success": "تم الرفع بنجاح!",
+            "successMessage": "جاري معالجة مستندك. يمكنك الآن توليد اختبارات منه.",
+            "uploadAnother": "رفع آخر"
+        }
+    },
+    "quiz": {
+        "generate": {
+            "title": "توليد اختبار جديد",
+            "subtitle": "أنشئ اختباراً بالذكاء الاصطناعي من موادك الدراسية",
+            "selectDocument": "اختر المستند",
+            "selectDocumentDesc": "اختر المادة المصدرية لاختبارك",
+            "difficulty": "مستوى الصعوبة",
+            "easy": "سهل",
+            "medium": "متوسط",
+            "hard": "صعب",
+            "basicConcepts": "مفاهيم أساسية",
+            "standardDifficulty": "صعوبة قياسية",
+            "advancedTopics": "مواضيع متقدمة",
+            "numberOfQuestions": "عدد الأسئلة",
+            "summary": "ملخص الاختبار",
+            "configuration": "الإعدادات",
+            "document": "المستند",
+            "notSelected": "غير محدد",
+            "questions": "أسئلة",
+            "generateQuiz": "توليد الاختبار",
+            "generating": "جاري التوليد..."
+        },
+        "taking": {
+            "questionOf": "السؤال {{current}} من {{total}}",
+            "checkAnswer": "تحقق من الإجابة",
+            "nextQuestion": "السؤال التالي",
+            "viewResults": "عرض النتائج",
+            "correct": "صحيح!",
+            "correctMessage": "أحسنت! لقد أجبت بشكل صحيح.",
+            "incorrect": "ليس صحيحاً تماماً",
+            "correctAnswerIs": "الإجابة الصحيحة هي:"
+        },
+        "results": {
+            "title": "انتهى الاختبار!",
+            "yourScore": "نتيجتك",
+            "backToDashboard": "العودة للوحة التحكم",
+            "tryAgain": "جرب اختباراً آخر"
+        }
+    },
+    "share": {
+        "title": "الروابط المشتركة",
+        "subtitle": "إدارة روابط مشاركة الاختبارات",
+        "createNew": "إنشاء رابط جديد",
+        "totalLinks": "إجمالي الروابط",
+        "totalViews": "إجمالي المشاهدات",
+        "activeLinks": "الروابط النشطة",
+        "yourLinks": "روابطك المشتركة",
+        "linksDescription": "انقر لنسخ الرابط أو إدارة إعدادات المشاركة",
+        "views": "مشاهدات",
+        "expires": "ينتهي",
+        "expired": "منتهي",
+        "copied": "تم النسخ!"
+    }
+}

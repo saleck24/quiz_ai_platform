@@ -1,0 +1,181 @@
+{
+    "common": {
+        "appName": "QuizGenius",
+        "login": "Login",
+        "register": "Register",
+        "logout": "Logout",
+        "dashboard": "Dashboard",
+        "documents": "Documents",
+        "upload": "Upload",
+        "quiz": "Quiz",
+        "generate": "Generate",
+        "share": "Share",
+        "settings": "Settings",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "search": "Search",
+        "loading": "Loading...",
+        "error": "Error",
+        "success": "Success"
+    },
+    "landing": {
+        "hero": {
+            "title": "Transform Your Notes Into",
+            "titleHighlight": "Interactive Quizzes",
+            "subtitle": "Upload any document and let our AI generate personalized, adaptive quizzes. Learn smarter, not harder.",
+            "cta": "Start Learning Now",
+            "existingUser": "I Have an Account"
+        },
+        "badge": "Powered by Advanced AI",
+        "features": {
+            "title": "Everything You Need to Excel",
+            "subtitle": "Powerful features designed to supercharge your learning experience",
+            "security": {
+                "title": "Enterprise Security",
+                "description": "Your data protected with bank-level encryption and strict access controls."
+            },
+            "uploads": {
+                "title": "Smart Uploads",
+                "description": "Support for PDF, DOCX, and TXT files with intelligent text extraction."
+            },
+            "ai": {
+                "title": "Adaptive AI",
+                "description": "Quizzes that adjust to your skill level for optimal learning."
+            },
+            "sharing": {
+                "title": "Easy Sharing",
+                "description": "Share quizzes with temporary links that expire for security."
+            }
+        },
+        "cta": {
+            "title": "Ready to Ace Your Exams?",
+            "subtitle": "Join thousands of students already learning smarter with QuizGenius.",
+            "button": "Get Started Free"
+        }
+    },
+    "auth": {
+        "welcomeBack": "Welcome back",
+        "enterCredentials": "Enter your credentials to access your account",
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "fullName": "Full Name",
+        "forgotPassword": "Forgot?",
+        "signIn": "Sign In",
+        "signingIn": "Signing in...",
+        "createAccount": "Create Account",
+        "creatingAccount": "Creating account...",
+        "noAccount": "Don't have an account?",
+        "hasAccount": "Already have an account?",
+        "createFree": "Create one free",
+        "resetPassword": "Reset your password",
+        "resetSubtitle": "Enter your email and we'll send you a reset link",
+        "sendResetLink": "Send Reset Link",
+        "backToLogin": "Back to Login",
+        "checkEmail": "Check your email",
+        "resetLinkSent": "We've sent a password reset link to",
+        "passwordRequirements": {
+            "length": "At least 10 characters",
+            "uppercase": "One uppercase letter",
+            "number": "One number",
+            "special": "One special character"
+        }
+    },
+    "dashboard": {
+        "welcome": "Welcome back",
+        "subtitle": "Here's what's happening with your learning journey.",
+        "stats": {
+            "documents": "Documents",
+            "quizzesTaken": "Quizzes Taken",
+            "averageScore": "Average Score",
+            "studyTime": "Study Time",
+            "thisWeek": "This week"
+        },
+        "cta": {
+            "title": "Ready for a new challenge?",
+            "subtitle": "Upload your study materials and let AI create personalized quizzes tailored to your learning needs.",
+            "uploadDocument": "Upload Document",
+            "generateQuiz": "Generate Quiz"
+        },
+        "recentActivity": "Recent Activity",
+        "recentDocuments": "Recent Documents",
+        "viewAll": "View all"
+    },
+    "documents": {
+        "title": "Documents",
+        "subtitle": "Manage your uploaded study materials",
+        "uploadNew": "Upload New",
+        "searchPlaceholder": "Search documents...",
+        "pages": "pages",
+        "upload": {
+            "title": "Upload Document",
+            "subtitle": "Upload your study materials to generate AI-powered quizzes",
+            "dropHere": "Drop your file here",
+            "orClick": "or click to browse from your computer",
+            "browseFiles": "Browse Files",
+            "supported": "Supported: PDF, DOCX, TXT (Max 10MB)",
+            "documentTitle": "Document Title",
+            "titlePlaceholder": "Enter a title for this document",
+            "uploadButton": "Upload Document",
+            "uploading": "Uploading...",
+            "success": "Upload Successful!",
+            "successMessage": "Your document is being processed. You can now generate quizzes from it.",
+            "uploadAnother": "Upload Another"
+        }
+    },
+    "quiz": {
+        "generate": {
+            "title": "Generate New Quiz",
+            "subtitle": "Create an AI-powered quiz from your study materials",
+            "selectDocument": "Select Document",
+            "selectDocumentDesc": "Choose the source material for your quiz",
+            "difficulty": "Difficulty Level",
+            "easy": "Easy",
+            "medium": "Medium",
+            "hard": "Hard",
+            "basicConcepts": "Basic concepts",
+            "standardDifficulty": "Standard difficulty",
+            "advancedTopics": "Advanced topics",
+            "numberOfQuestions": "Number of Questions",
+            "summary": "Quiz Summary",
+            "configuration": "Configuration",
+            "document": "Document",
+            "notSelected": "Not selected",
+            "questions": "Questions",
+            "generateQuiz": "Generate Quiz",
+            "generating": "Generating..."
+        },
+        "taking": {
+            "questionOf": "Question {{current}} of {{total}}",
+            "checkAnswer": "Check Answer",
+            "nextQuestion": "Next Question",
+            "viewResults": "View Results",
+            "correct": "Correct!",
+            "correctMessage": "Great job! You got this one right.",
+            "incorrect": "Not quite right",
+            "correctAnswerIs": "The correct answer is:"
+        },
+        "results": {
+            "title": "Quiz Complete!",
+            "yourScore": "Your Score",
+            "backToDashboard": "Back to Dashboard",
+            "tryAgain": "Try Another Quiz"
+        }
+    },
+    "share": {
+        "title": "Shared Links",
+        "subtitle": "Manage your quiz sharing links",
+        "createNew": "Create New Link",
+        "totalLinks": "Total Links",
+        "totalViews": "Total Views",
+        "activeLinks": "Active Links",
+        "yourLinks": "Your Shared Links",
+        "linksDescription": "Click to copy link or manage sharing settings",
+        "views": "views",
+        "expires": "expires",
+        "expired": "Expired",
+        "copied": "Copied!"
+    }
+}
