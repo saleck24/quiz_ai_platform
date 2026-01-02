@@ -1,0 +1,30 @@
+import type { NextApiRequest, NextApiResponse } from "next";
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Méthode non autorisée. Utilisez POST." });
+  }
+
+  const { quiz_id, question_id } = req.query;
+
+  const accessToken = req.cookies.access_token;
+  if (!accessToken) return res.status(401).json({ error: "Non authentifié." });
+
+  const BACKEND_URL = process.env.BACKEND_URL;
+  if (!BACKEND_URL) return res.status(500).json({ error: "BACKEND_URL non définie" });
+
+  const backendResponse = await fetch(
+    `${BACKEND_URL}/api/quiz/reponse/${quiz_id}/${question_id}/`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(req.body),
+    }
+  );
+
+  const data = await backendResponse.json().catch(() => ({}));
+  return res.status(backendResponse.status).json(data);
+}

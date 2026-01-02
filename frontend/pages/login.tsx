@@ -30,18 +30,67 @@ export default function LoginPage() {
     });
 
     const onSubmit = async (data: LoginFormValues) => {
-        setIsLoading(true);
-        setError(null);
-        try {
-            console.log('Login data:', data);
-            document.cookie = "token=simulated_secure_token; path=/; secure; samesite=strict";
-            router.push('/dashboard');
-        } catch (err) {
-            setError("Invalid credentials. Please try again.");
-        } finally {
-            setIsLoading(false);
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+        console.log('Tentative de connexion:', data.email);
+
+        // 1. Appel à l'API via notre proxy
+        const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include', // Important pour recevoir les cookies
+            body: JSON.stringify({
+                email: data.email,
+                password: data.password,
+            }),
+        });
+
+        // 2. Parser la réponse JSON
+        const result = await response.json();
+
+        // 3. Vérifier si la requête a réussi
+        if (!response.ok) {
+            throw new Error(result.error || 'Échec de la connexion');
         }
-    };
+
+        console.log('Connexion réussie:', result.user);
+        console.log('Réponse headers:', Object.fromEntries(response.headers.entries()));
+        console.log('Données JSON reçues:', result);
+
+        // 4. Stocker les informations utilisateur dans localStorage
+        localStorage.setItem('user', JSON.stringify(result.user));
+        
+        // 5. Stocker le token d'accès côté client si nécessaire
+        if (result.tokens && result.tokens.access) {
+            localStorage.setItem('access_token', result.tokens.access);
+        }
+
+        // 6. Vérifier que le router est prêt avant de rediriger
+        if (!router.isReady) {
+            await new Promise(resolve => router.events.on('routeChangeComplete', resolve));
+        }
+
+        // 7. Rediriger vers le dashboard
+        console.log('Redirection vers /dashboard...');
+        
+        // Utiliser replace au lieu de push pour éviter les problèmes d'historique
+        await router.replace('/dashboard');
+        
+    } catch (err) {
+        console.error('Erreur de connexion:', err);
+        
+        if (err instanceof Error) {
+            setError(err.message);
+        } else {
+            setError("Identifiants invalides. Veuillez réessayer.");
+        }
+        setIsLoading(false);
+    }
+};
 
     return (
         <div className="min-h-screen flex" dir={router.locale === 'ar' ? 'rtl' : 'ltr'}>

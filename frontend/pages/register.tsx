@@ -44,17 +44,55 @@ export default function RegisterPage() {
     ];
 
     const onSubmit = async (data: RegisterFormValues) => {
-        setIsLoading(true);
-        setError(null);
-        try {
-            console.log('Register data:', data);
-            router.push('/login');
-        } catch (err) {
-            setError("Registration failed. Please try again.");
-        } finally {
-            setIsLoading(false);
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+        console.log('Tentative d\'inscription:', data.email);
+
+        // 1. Appel à l'API Route Next.js (pas directement à Django)
+        const response = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: data.name,
+                email: data.email,
+                password: data.password,
+                confirmPassword: data.confirmPassword,
+            }),
+        });
+
+        // 2. Parser la réponse JSON
+        const result = await response.json();
+
+        // 3. Vérifier si la requête a réussi
+        if (!response.ok) {
+            // Afficher l'erreur retournée par l'API
+            throw new Error(result.error || 'Échec de l\'inscription');
         }
-    };
+
+        // 4. Succès : afficher un message (optionnel)
+        console.log('Inscription réussie:', result);
+
+        // 5. Rediriger vers la page de login
+        router.push('/login?registered=true'); // Paramètre pour afficher un message de succès
+
+    } catch (err) {
+        // 6. Gérer les erreurs
+        console.error('Erreur d\'inscription:', err);
+        
+        if (err instanceof Error) {
+            setError(err.message);
+        } else {
+            setError("Une erreur est survenue. Veuillez réessayer.");
+        }
+    } finally {
+        // 7. Toujours désactiver le loading
+        setIsLoading(false);
+    }
+};
 
     return (
         <div className="min-h-screen flex">

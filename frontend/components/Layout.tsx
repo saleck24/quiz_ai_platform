@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next';
 import { Button } from '@/components/ui/Button';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { Sparkles, LayoutDashboard, Upload, BrainCircuit, Share2, LogOut, Settings } from 'lucide-react';
+import { apiClient } from '@/lib/api';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -22,9 +23,17 @@ export default function Layout({ children }: LayoutProps) {
         { href: '/share/manage', label: t('common.share'), icon: Share2 },
     ];
 
-    const handleLogout = () => {
-        document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+    const handleLogout = async () => {
+    try {
+        await apiClient.logout(); // appelle /api/auth/logout => supprime access_token & refresh_token (HttpOnly)
+    } catch (e) {
+        console.error("Erreur logout:", e);
+    } finally {
+        // Nettoyer les infos locales (optionnel mais recommandé)
+        localStorage.removeItem("user");
+        localStorage.removeItem("access_token"); // si tu l'avais stocké
         router.push('/login');
+    }
     };
 
     return (

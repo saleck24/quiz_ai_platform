@@ -9,7 +9,10 @@ export function middleware(request: NextRequest) {
 
     // Get the token from the cookies
     // In a real app, you would verify the token's validity here
-    const token = request.cookies.get('token')?.value || '';
+    const token =
+  request.cookies.get('access_token')?.value ||
+  request.cookies.get('refresh_token')?.value ||
+  '';
 
     if (isPublicPath && token) {
         // If user is already logged in and tries to access login/register, redirect to dashboard
