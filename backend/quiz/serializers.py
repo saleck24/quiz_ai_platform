@@ -8,6 +8,21 @@ class QuestionSerializer(serializers.ModelSerializer):
         model = Question
         fields = ['id', 'question', 'options', 'reponse', 'explication', 'niveau']
 
+# ----------------- Quiz (minimal pour liste) -----------------
+class QuizListSerializer(serializers.ModelSerializer):
+    note_title = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Quiz
+        fields = ['id', 'note_title', 'created_at']
+
+    def get_note_title(self, obj):
+        import os
+        if obj.note and obj.note.file and obj.note.file.name:
+            return os.path.basename(obj.note.file.name)
+        return f"Quiz #{obj.id}"
+
+
 # ----------------- Quiz -----------------
 class QuizSerializer(serializers.ModelSerializer):
     # On inclut les questions associées pour retourner tout le quiz
