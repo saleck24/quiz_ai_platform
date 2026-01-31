@@ -12,6 +12,7 @@ from .serializers import QuizSerializer, QuestionSerializer, QuizSessionSerializ
 from notes.models import Note
 from core_ia.gemini_engine import GenerateurQuiz
 from core_ia.vector_store import MoteurRecherche
+import os
 
 
 # ----------------- GENERER UN QUIZ -----------------
@@ -60,7 +61,18 @@ class GenererQuizView(APIView):
                 questions_creees.append(question)
 
         serializer = QuizSerializer(quiz)
+        serializer = QuizSerializer(quiz)
         return Response(serializer.data)
+
+
+# ----------------- RECUPERER UN QUIZ EXISTANT -----------------
+class QuizDetailView(generics.RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = QuizSerializer
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        return Quiz.objects.filter(user=self.request.user)
 
 
 # ----------------- SOUMETTRE UNE REPONSE -----------------
@@ -129,5 +141,109 @@ class RejoindreSessionView(APIView):
         if session.expires_at < timezone.now():
             return Response({"error": "Session expirée"}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Incrémenter le compteur de vues
+        session.views_count += 1
+        session.save()
+
         serializer = QuizSessionSerializer(session)
         return Response(serializer.data)
+
+
+# ----------------- LISTER LES SESSIONS -----------------
+class SessionListView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = QuizSessionSerializer
+
+    def get_queryset(self):
+        # On filtre les sessions dont le quiz appartient à l'utilisateur
+        return QuizSession.objects.filter(quiz__user=self.request.user).order_by('-expires_at')
+
+
+# ----------------- SUPPRIMER UNE SESSION -----------------
+class SessionDeleteView(generics.DestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        return QuizSession.objects.filter(quiz__user=self.request.user)
+
+
+# ----------------- DASHBOARD STATS -----------------
+class StatsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        
+        # 1. Nombre de documents
+        docs_count = Note.objects.filter(user=user).count()
+        
+        # 2. Nombre de quiz commencés/générés
+        quiz_count = Quiz.objects.filter(user=user).count()
+        
+        # 3. Score moyen (Placeholder car pas de modèle Score pour l'instant)
+        # On pourrait imaginer une moyenne basée sur le niveau atteint
+        avg_score = 0
+        if quiz_count > 0:
+            # Exemple simple : on suppose que chaque niveau vaut 20% (niveau 5 = 100%)
+            avg_lvl = 0
+            quizzes = Quiz.objects.filter(user=user)
+            for q in quizzes:
+                avg_lvl += q.niveau
+            
+            avg_score = int((avg_lvl / quiz_count) * 20)
+            avg_score = min(100, avg_score)
+
+        # 4. Activité Récente (Fusion Notes + Quiz)
+        # 4. Activité Récente (Fusion Notes + Quiz)
+        recent_activity = []
+
+        try:
+            # Récupérer les 5 dernières notes
+            recent_notes = Note.objects.filter(user=user).order_by('-uploaded_at')[:5]
+            for n in recent_notes:
+                filename = "Document"
+                if n.file and n.file.name:
+                    filename = os.path.basename(n.file.name)
+                
+                recent_activity.append({
+                    "type": "note",
+                    "action": "Uploaded",
+                    "subject": filename,
+                    "timestamp": n.uploaded_at,
+                    "score": None
+                })
+
+            # Récupérer les 5 derniers quiz
+            recent_quizzes = Quiz.objects.filter(user=user).order_by('-created_at')[:5]
+            for q in recent_quizzes:
+                # On estime un score affichable basé sur le niveau (juste pour l'UI)
+                display_score = f"{min(100, q.niveau * 20)}%" 
+                note_title = "Quiz"
+                if q.note and q.note.file and q.note.file.name:
+                     note_title = os.path.basename(q.note.file.name)
+                
+                recent_activity.append({
+                    "type": "quiz",
+                    "action": "Generated Quiz",
+                    "subject": note_title,
+                    "timestamp": q.created_at,
+                    "score": display_score
+                })
+
+            # Trier par date décroissante
+            recent_activity.sort(key=lambda x: x['timestamp'], reverse=True)
+            # Garder les 5 premiers
+            recent_activity = recent_activity[:5]
+        except Exception as e:
+            print(f"Error calculating recent activity: {e}")
+            # On continue sans activité récente plutôt que de planter
+            recent_activity = []
+
+        return Response({
+            "documents": docs_count,
+            "quizzesTaken": quiz_count,
+            "averageScore": avg_score,
+            "studyTime": "0h", # Remplacement de N/A par 0h pour faire plus propre
+            "recentActivity": recent_activity
+        })
