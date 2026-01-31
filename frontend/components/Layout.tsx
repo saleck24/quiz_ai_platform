@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
@@ -15,6 +15,21 @@ export default function Layout({ children }: LayoutProps) {
     const { t } = useTranslation('common');
     const router = useRouter();
     const pathname = router.pathname;
+    const [userInitials, setUserInitials] = useState('JD');
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const userStr = localStorage.getItem('user');
+            if (userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    setUserInitials(user.username?.substring(0, 2).toUpperCase() || 'JD');
+                } catch {
+                    setUserInitials('JD');
+                }
+            }
+        }
+    }, []);
 
     const navItems = [
         { href: '/dashboard', label: t('common.dashboard'), icon: LayoutDashboard },
@@ -24,16 +39,18 @@ export default function Layout({ children }: LayoutProps) {
     ];
 
     const handleLogout = async () => {
-    try {
-        await apiClient.logout(); // appelle /api/auth/logout => supprime access_token & refresh_token (HttpOnly)
-    } catch (e) {
-        console.error("Erreur logout:", e);
-    } finally {
-        // Nettoyer les infos locales (optionnel mais recommandé)
-        localStorage.removeItem("user");
-        localStorage.removeItem("access_token"); // si tu l'avais stocké
-        router.push('/login');
-    }
+        try {
+            await apiClient.logout(); // appelle /api/auth/logout => supprime access_token & refresh_token (HttpOnly)
+        } catch (e) {
+            console.error("Erreur logout:", e);
+        } finally {
+            // Nettoyer les infos locales (optionnel mais recommandé)
+            if (typeof window !== 'undefined') {
+                localStorage.removeItem("user");
+                localStorage.removeItem("access_token"); // si tu l'avais stocké
+            }
+            router.push('/login');
+        }
     };
 
     return (
@@ -102,11 +119,13 @@ export default function Layout({ children }: LayoutProps) {
                     <div className="hidden md:block"></div>
                     <div className="flex items-center gap-4">
                         <LanguageSwitcher />
-                        <button className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors">
-                            <Settings className="w-5 h-5 text-slate-600" />
-                        </button>
+                        <Link href="/settings">
+                            <button className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors">
+                                <Settings className="w-5 h-5 text-slate-600" />
+                            </button>
+                        </Link>
                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-semibold text-sm">
-                            JD
+                            {userInitials}
                         </div>
                     </div>
                 </header>
