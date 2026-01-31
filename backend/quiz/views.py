@@ -134,7 +134,7 @@ class CreerSessionView(APIView):
 
 # ----------------- REJOINDRE UNE SESSION -----------------
 class RejoindreSessionView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]  # Token dans l'URL = accès public
 
     def get(self, request, token):
         session = get_object_or_404(QuizSession, token=token)
