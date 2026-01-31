@@ -20,7 +20,8 @@ class QuizSerializer(serializers.ModelSerializer):
 # ----------------- QuizSession -----------------
 class QuizSessionSerializer(serializers.ModelSerializer):
     quiz = QuizSerializer(read_only=True)
+    views_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = QuizSession
-        fields = ['id', 'quiz', 'token', 'expires_at']
+        fields = ['id', 'quiz', 'token', 'expires_at', 'views_count']
