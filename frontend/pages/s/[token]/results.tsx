@@ -5,6 +5,8 @@ import { useRouter } from 'next/router';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Trophy } from 'lucide-react';
+import { GetServerSideProps } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 export default function SharedQuizResultsPage() {
     const router = useRouter();
@@ -42,7 +44,7 @@ export default function SharedQuizResultsPage() {
                         </Link>
                         <Link href="/register">
                             <Button className="bg-gradient-to-r from-indigo-600 to-purple-600">
-                                Créer un compte
+                                إنشاء حساب
                             </Button>
                         </Link>
                     </div>
@@ -51,3 +53,11 @@ export default function SharedQuizResultsPage() {
         </div>
     );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+    return {
+        props: {
+            ...(await serverSideTranslations(locale ?? 'en', ['common'])),
+        },
+    };
+};
