@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const BACKEND_URL = process.env.BACKEND_URL;
     if (!BACKEND_URL) return res.status(500).json({ error: "BACKEND_URL non définie" });
 
-    const backendResponse = await fetch(`${BACKEND_URL}/api/quiz/list/`, {
+    const backendResponse = await fetch(`${BACKEND_URL}/api/quiz/all/`, {
         method: "GET",
         headers: {
             Authorization: `Bearer ${accessToken}`,
