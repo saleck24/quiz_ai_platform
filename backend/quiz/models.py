@@ -31,3 +31,4 @@ class QuizSession(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     token = models.CharField(max_length=100, unique=True, default=uuid.uuid4)
     expires_at = models.DateTimeField(default=get_expiration_time)
+    views_count = models.IntegerField(default=0)
