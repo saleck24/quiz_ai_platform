@@ -80,6 +80,7 @@ export default function ManageLinksPage() {
     };
 
     const handleCopy = (id: number, token: string) => {
+        if (typeof window === 'undefined') return;
         const url = `${window.location.origin}/s/${token}`;
         navigator.clipboard.writeText(url);
         setCopiedId(id);
