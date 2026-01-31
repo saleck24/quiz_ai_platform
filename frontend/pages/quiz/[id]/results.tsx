@@ -7,12 +7,53 @@ import { useTranslation } from 'next-i18next';
 import Layout from '@/components/Layout';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { Trophy } from 'lucide-react';
+import { Trophy, Share2, Copy, Check, Loader2 } from 'lucide-react';
+import { apiClient } from '@/lib/api';
+import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 export default function QuizResultsPage() {
     const { t } = useTranslation('common');
-    const score = 85;
-    const total = 10;
+    const router = useRouter();
+    const { score: scoreQuery, total: totalQuery } = router.query;
+
+    const score = Number(scoreQuery) || 0;
+    const total = Number(totalQuery) || 0;
+    const { id: quizId } = router.query;
+    const percentage = total > 0 ? Math.round((score / total) * 100) : 0;
+
+    const [isSharing, setIsSharing] = useState(false);
+    const [shareToken, setShareToken] = useState<string | null>(null);
+    const [isCopied, setIsCopied] = useState(false);
+
+    const handleShare = async () => {
+        if (!quizId) return;
+        setIsSharing(true);
+        try {
+            const session = await apiClient.createQuizSession(quizId as string);
+            if (session?.token) {
+                setShareToken(session.token);
+            }
+        } catch (error) {
+            console.error("Erreur lors de la création de la session:", error);
+        } finally {
+            setIsSharing(false);
+        }
+    };
+
+    const [baseUrl, setBaseUrl] = useState('');
+
+    useEffect(() => {
+        setBaseUrl(window.location.origin);
+    }, []);
+
+    const copyToClipboard = () => {
+        if (!shareToken) return;
+        const url = `${baseUrl}/s/${shareToken}`;
+        navigator.clipboard.writeText(url);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+    };
 
     return (
         <Layout>
@@ -32,17 +73,46 @@ export default function QuizResultsPage() {
                         <div className="mb-8">
                             <p className="text-slate-500 mb-2">{t('quiz.results.yourScore')}</p>
                             <p className="text-6xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                                {score}%
+                                {percentage}%
                             </p>
-                            <p className="text-slate-500 mt-2">8/{total} correct answers</p>
+                            <p className="text-slate-500 mt-2">{score}/{total} {t('quiz.results.correctAnswers') || "correct answers"}</p>
                         </div>
+
+                        {shareToken ? (
+                            <div className="mb-8 p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-3">
+                                <div className="flex-1 text-left truncate text-sm font-mono text-slate-600">
+                                    {baseUrl}/s/{shareToken}
+                                </div>
+                                <Button size="sm" variant="ghost" onClick={copyToClipboard} className="text-indigo-600">
+                                    {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                                </Button>
+                            </div>
+                        ) : (
+                            <div className="mb-8">
+                                <Button
+                                    variant="outline"
+                                    className="w-full flex items-center justify-center gap-2 py-6 border-dashed border-2 hover:border-indigo-300 hover:bg-indigo-50/50"
+                                    onClick={handleShare}
+                                    disabled={isSharing}
+                                >
+                                    {isSharing ? (
+                                        <Loader2 className="w-5 h-5 animate-spin" />
+                                    ) : (
+                                        <>
+                                            <Share2 className="w-5 h-5 text-indigo-600" />
+                                            <span>{t('share.createNew') || "Partager ce quiz"}</span>
+                                        </>
+                                    )}
+                                </Button>
+                            </div>
+                        )}
 
                         <div className="flex justify-center gap-4">
                             <Link href="/dashboard">
-                                <Button variant="outline">{t('quiz.results.backToDashboard')}</Button>
+                                <Button variant="outline" className="flex-1">{t('quiz.results.backToDashboard')}</Button>
                             </Link>
                             <Link href="/quiz/generate">
-                                <Button className="bg-gradient-to-r from-indigo-600 to-purple-600">
+                                <Button className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600">
                                     {t('quiz.results.tryAgain')}
                                 </Button>
                             </Link>
