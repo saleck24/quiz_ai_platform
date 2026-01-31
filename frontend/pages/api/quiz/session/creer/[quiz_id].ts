@@ -1,24 +1,24 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Méthode non autorisée. Utilisez GET." });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Méthode non autorisée. Utilisez POST." });
   }
 
-  const { token } = req.query;
-
+  const { quiz_id } = req.query;
   const accessToken = req.cookies.access_token;
   if (!accessToken) return res.status(401).json({ error: "Non authentifié." });
 
   const BACKEND_URL = process.env.BACKEND_URL;
   if (!BACKEND_URL) return res.status(500).json({ error: "BACKEND_URL non définie" });
 
-  const backendResponse = await fetch(`${BACKEND_URL}/api/quiz/session/rejoindre/${token}/`, {
-    method: "GET",
+  const backendResponse = await fetch(`${BACKEND_URL}/api/quiz/session/creer/${quiz_id}/`, {
+    method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
     },
+    body: JSON.stringify({}),
   });
 
   const data = await backendResponse.json().catch(() => ({}));
