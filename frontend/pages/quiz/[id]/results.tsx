@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { GetServerSideProps } from 'next';
@@ -9,7 +9,6 @@ import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Trophy, Share2, Copy, Check, Loader2 } from 'lucide-react';
 import { apiClient } from '@/lib/api';
-import { useState } from 'react';
 import { useRouter } from 'next/router';
 
 export default function QuizResultsPage() {
