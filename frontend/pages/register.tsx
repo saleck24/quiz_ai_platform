@@ -7,7 +7,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/router';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
-import { Sparkles, Mail, Lock, User, ArrowRight, Check } from 'lucide-react';
+import { apiClient } from '@/lib/api';
+import { Sparkles, Mail, Lock, User, ArrowRight, Check, Eye, EyeOff } from 'lucide-react';
 
 const registerSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
@@ -29,6 +30,8 @@ export default function RegisterPage() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const { register, handleSubmit, formState: { errors }, watch } = useForm<RegisterFormValues>({
         resolver: zodResolver(registerSchema),
@@ -44,55 +47,40 @@ export default function RegisterPage() {
     ];
 
     const onSubmit = async (data: RegisterFormValues) => {
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-        console.log('Tentative d\'inscription:', data.email);
+        setIsLoading(true);
+        setError(null);
 
-        // 1. Appel à l'API Route Next.js (pas directement à Django)
-        const response = await fetch('/api/auth/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
+        try {
+            console.log('Tentative d\'inscription:', data.email);
+
+            // 1. Appel à l'API via apiClient
+            const result = await apiClient.register({
                 name: data.name,
                 email: data.email,
                 password: data.password,
                 confirmPassword: data.confirmPassword,
-            }),
-        });
+            });
 
-        // 2. Parser la réponse JSON
-        const result = await response.json();
+            // 3. Succès (apiClient throw si erreur)
+            console.log('Inscription réussie:', result);
 
-        // 3. Vérifier si la requête a réussi
-        if (!response.ok) {
-            // Afficher l'erreur retournée par l'API
-            throw new Error(result.error || 'Échec de l\'inscription');
+            // 5. Rediriger vers la page de login
+            router.push('/login?registered=true'); // Paramètre pour afficher un message de succès
+
+        } catch (err) {
+            // 6. Gérer les erreurs
+            console.error('Erreur d\'inscription:', err);
+
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError("Une erreur est survenue. Veuillez réessayer.");
+            }
+        } finally {
+            // 7. Toujours désactiver le loading
+            setIsLoading(false);
         }
-
-        // 4. Succès : afficher un message (optionnel)
-        console.log('Inscription réussie:', result);
-
-        // 5. Rediriger vers la page de login
-        router.push('/login?registered=true'); // Paramètre pour afficher un message de succès
-
-    } catch (err) {
-        // 6. Gérer les erreurs
-        console.error('Erreur d\'inscription:', err);
-        
-        if (err instanceof Error) {
-            setError(err.message);
-        } else {
-            setError("Une erreur est survenue. Veuillez réessayer.");
-        }
-    } finally {
-        // 7. Toujours désactiver le loading
-        setIsLoading(false);
-    }
-};
+    };
 
     return (
         <div className="min-h-screen flex">
@@ -155,7 +143,7 @@ export default function RegisterPage() {
                                     id="name"
                                     type="text"
                                     placeholder="John Doe"
-                                    className="pl-10 h-12 bg-white border-slate-200"
+                                    className="pl-10 h-12 bg-white text-slate-900 placeholder:text-slate-400 border-slate-200"
                                     disabled={isLoading}
                                     error={errors.name?.message}
                                     {...register('name')}
@@ -171,7 +159,7 @@ export default function RegisterPage() {
                                     id="email"
                                     type="email"
                                     placeholder="you@example.com"
-                                    className="pl-10 h-12 bg-white border-slate-200"
+                                    className="pl-10 h-12 bg-white text-slate-900 placeholder:text-slate-400 border-slate-200"
                                     disabled={isLoading}
                                     error={errors.email?.message}
                                     {...register('email')}
@@ -185,13 +173,24 @@ export default function RegisterPage() {
                                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                                 <Input
                                     id="password"
-                                    type="password"
+                                    type={showPassword ? "text" : "password"}
                                     placeholder="Create a strong password"
-                                    className="pl-10 h-12 bg-white border-slate-200"
+                                    className="pl-10 pr-10 h-12 bg-white text-slate-900 placeholder:text-slate-400 border-slate-200"
                                     disabled={isLoading}
                                     error={errors.password?.message}
                                     {...register('password')}
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                >
+                                    {showPassword ? (
+                                        <EyeOff className="w-5 h-5" />
+                                    ) : (
+                                        <Eye className="w-5 h-5" />
+                                    )}
+                                </button>
                             </div>
                             {/* Password Strength Indicator */}
                             <div className="grid grid-cols-2 gap-2 mt-3">
@@ -212,13 +211,24 @@ export default function RegisterPage() {
                                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                                 <Input
                                     id="confirmPassword"
-                                    type="password"
+                                    type={showConfirmPassword ? "text" : "password"}
                                     placeholder="Confirm your password"
-                                    className="pl-10 h-12 bg-white border-slate-200"
+                                    className="pl-10 pr-10 h-12 bg-white text-slate-900 placeholder:text-slate-400 border-slate-200"
                                     disabled={isLoading}
                                     error={errors.confirmPassword?.message}
                                     {...register('confirmPassword')}
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                >
+                                    {showConfirmPassword ? (
+                                        <EyeOff className="w-5 h-5" />
+                                    ) : (
+                                        <Eye className="w-5 h-5" />
+                                    )}
+                                </button>
                             </div>
                         </div>
 
