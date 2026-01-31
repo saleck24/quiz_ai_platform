@@ -7,6 +7,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
 import Layout from '@/components/Layout';
 import { Card, CardContent } from '@/components/ui/Card';
+import { useRouter } from 'next/router';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Upload, FileText, X, CheckCircle, ArrowRight } from 'lucide-react';
@@ -14,6 +15,7 @@ import { apiClient } from '@/lib/api';
 
 export default function UploadPage() {
   const { t } = useTranslation('common');
+  const router = useRouter();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -22,6 +24,7 @@ export default function UploadPage() {
   const [title, setTitle] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+  const [uploadedNoteId, setUploadedNoteId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -76,7 +79,11 @@ export default function UploadPage() {
       formData.append('file', file);
       formData.append('title', title);
 
-      await apiClient.uploadNote(formData);
+      const response = await apiClient.uploadNote(formData);
+
+      if (response && response.id) {
+        setUploadedNoteId(response.id);
+      }
 
       setIsComplete(true);
     } catch (e: any) {
@@ -121,7 +128,17 @@ export default function UploadPage() {
                 <Button variant="outline" onClick={removeFile} type="button">
                   {t('documents.upload.uploadAnother')}
                 </Button>
-                <Button className="bg-gradient-to-r from-indigo-600 to-purple-600" type="button">
+                <Button
+                  className="bg-gradient-to-r from-indigo-600 to-purple-600"
+                  type="button"
+                  onClick={() => {
+                    if (uploadedNoteId) {
+                      router.push(`/quiz/generate?note_id=${uploadedNoteId}`);
+                    } else {
+                      router.push('/quiz/generate');
+                    }
+                  }}
+                >
                   {t('dashboard.cta.generateQuiz')}
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
@@ -135,13 +152,12 @@ export default function UploadPage() {
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                className={`border-2 border-dashed rounded-2xl p-12 text-center transition-all duration-300 ${
-                  isDragging
-                    ? 'border-indigo-500 bg-indigo-50'
-                    : file
-                      ? 'border-emerald-300 bg-emerald-50'
-                      : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'
-                }`}
+                className={`border-2 border-dashed rounded-2xl p-12 text-center transition-all duration-300 ${isDragging
+                  ? 'border-indigo-500 bg-indigo-50'
+                  : file
+                    ? 'border-emerald-300 bg-emerald-50'
+                    : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'
+                  }`}
               >
                 {file ? (
                   <div className="flex items-center justify-center gap-4">
@@ -199,7 +215,7 @@ export default function UploadPage() {
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
                       placeholder={t('documents.upload.titlePlaceholder')}
-                      className="h-12"
+                      className="h-12 bg-white text-slate-900 placeholder:text-slate-400 border-indigo-100 focus:border-indigo-500 focus:ring-indigo-500"
                     />
                   </div>
 
