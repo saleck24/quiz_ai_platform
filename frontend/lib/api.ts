@@ -141,10 +141,28 @@ class ApiClient {
     });
   }
 
+  async getQuizzes() {
+    return this.fetchWithAuth("/quiz/list", { method: "GET" });
+  }
+
   async getQuiz(id: number | string) {
-    return this.fetchWithAuth(`/quiz/${id}/`, {
+    return this.fetchWithAuth(`/quiz/${id}`, {
       method: "GET",
     });
+  }
+
+  /** Rejoindre une session partagée (accessible sans auth - le token suffit) */
+  async joinQuizSessionPublic(token: string) {
+    const response = await fetch(`${this.baseURL}/quiz/session/rejoindre/${token}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.error || err.detail || `HTTP ${response.status}`);
+    }
+    return response.json();
   }
 
   async getQuizSessions() {
