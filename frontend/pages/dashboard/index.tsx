@@ -46,6 +46,7 @@ export default function Dashboard() {
 
   const [notes, setNotes] = useState<Note[]>([]);
   const [recentNotes, setRecentNotes] = useState<Note[]>([]);
+  const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [isLoadingNotes, setIsLoadingNotes] = useState(true);
   const [errorNotes, setErrorNotes] = useState<string | null>(null);
 
@@ -56,17 +57,52 @@ export default function Dashboard() {
   const [quizError, setQuizError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Récupérer le nom d'utilisateur depuis localStorage
-    const userStr = localStorage.getItem('user');
-    if (userStr) {
+    // Récupérer le profil utilisateur et les stats
+    const initDashboard = async () => {
       try {
-        const user = JSON.parse(userStr);
-        setUserName(user.first_name || user.username || 'Utilisateur');
-      } catch (e) {
-        console.error('Erreur lors du parsing des données utilisateur:', e);
-      }
-    }
+        // 1. Profil
+        try {
+          const profile = await apiClient.getUserProfile();
+          if (profile) {
+            setUserName(profile.first_name || profile.username || 'Utilisateur');
+            // Mettre à jour le localStorage pour la prochaine fois
+            localStorage.setItem('user', JSON.stringify(profile));
+          }
+        } catch (e) {
+          console.error('Erreur chargement profil:', e);
+          // Fallback au localStorage si API échoue
+          const userStr = localStorage.getItem('user');
+          if (userStr) {
+            const u = JSON.parse(userStr);
+            setUserName(u.first_name || u.username || 'Utilisateur');
+          }
+        }
 
+        // 2. Stats
+        try {
+          const s = await apiClient.getDashboardStats();
+          if (s) {
+            setStats({
+              documents: s.documents,
+              quizzesTaken: s.quizzesTaken,
+              averageScore: s.averageScore,
+              studyTime: s.studyTime || 'N/A'
+            });
+            // Mise à jour de l'activité récente
+            if (s.recentActivity) {
+              setRecentActivity(s.recentActivity);
+            }
+          }
+        } catch (e) {
+          console.error("Erreur chargement stats:", e);
+        }
+
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    initDashboard();
     fetchNotes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -187,15 +223,13 @@ export default function Dashboard() {
     return 'FILE';
   };
 
-  // --- Stats (réelles côté notes + placeholders pour quiz)
-  const stats = useMemo(() => {
-    return {
-      documents: notes.length,
-      quizzesTaken: 28, // TODO: stats quiz via endpoint
-      averageScore: 87, // TODO
-      studyTime: '14h', // TODO
-    };
-  }, [notes.length]);
+  // --- Stats State
+  const [stats, setStats] = useState({
+    documents: 0,
+    quizzesTaken: 0,
+    averageScore: 0,
+    studyTime: 'N/A'
+  });
 
   return (
     <Layout>
@@ -263,7 +297,7 @@ export default function Dashboard() {
 
               <Button
                 variant="outline"
-                className="border-white/30 text-white hover:bg-white/10"
+                className="bg-transparent border-2 border-white/40 text-white hover:bg-white hover:text-indigo-600 transition-all font-semibold"
                 onClick={generateQuizFromLatestNote}
                 disabled={isGeneratingQuiz}
               >
@@ -294,25 +328,27 @@ export default function Dashboard() {
             <CardTitle className="text-lg">{t('dashboard.recentActivity')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {[
-              { action: 'Completed quiz', subject: 'Cell Biology', time: '2h ago', score: '92%' },
-              { action: 'Uploaded', subject: 'Chapter 5 Notes', time: '5h ago' },
-              { action: 'Completed quiz', subject: 'Organic Chemistry', time: '1d ago', score: '78%' },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0"
-              >
-                <div>
-                  <p className="text-sm font-medium text-slate-900">{item.action}</p>
-                  <p className="text-xs text-slate-500">{item.subject}</p>
+            {recentActivity.length === 0 ? (
+              <p className="text-sm text-slate-500 text-center py-4">
+                Aucune activité récente.
+              </p>
+            ) : (
+              recentActivity.map((item, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0"
+                >
+                  <div>
+                    <p className="text-sm font-medium text-slate-900">{item.action}</p>
+                    <p className="text-xs text-slate-500">{item.subject}</p>
+                  </div>
+                  <div className="text-right">
+                    {item.score && <p className="text-sm font-semibold text-emerald-600">{item.score}</p>}
+                    <p className="text-xs text-slate-400">{formatDate(item.timestamp)}</p>
+                  </div>
                 </div>
-                <div className="text-right">
-                  {item.score && <p className="text-sm font-semibold text-emerald-600">{item.score}</p>}
-                  <p className="text-xs text-slate-400">{item.time}</p>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </CardContent>
         </Card>
       </div>
