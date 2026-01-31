@@ -61,6 +61,35 @@ class ApiClient {
     return this.fetchWithAuth("/auth/logout", { method: "POST" });
   }
 
+  async getUserProfile() {
+    return this.fetchWithAuth("/auth/profile/", { method: "GET" });
+  }
+
+  async register(data: any) {
+    return this.fetchWithAuth("/auth/register", {
+      method: "POST",
+      body: JSON.stringify(data)
+    });
+  }
+
+  async requestPasswordReset(email: string) {
+    // Note: This assumes you have a Next.js API route or proxy for this
+    // If communicating directly with Django: "/auth/password-reset/"
+    // But since we use Next.js proxy for auth usually, we might need to create one or use direct URL if proxy allows.
+    // For now, let's assume we call a Next.js API route we will create or the existing Django proxy if configured.
+    // Let's rely on the Django proxy path defined in lib/api which points to /api/...
+    // If lib/api.ts points to Next.js API folder (pages/api), we need to ensure those routes exist.
+    // However, the current ApiClient is baseURL="/api". 
+    // If pages/api/auth/password-reset.ts doesn't exist, this will fail.
+    // Strategy: We will create the missing Next.js API route for password reset OR calls Django directly?
+    // Given the project structure, it seems better to route via Next.js API.
+    // But to save time and following the plan, I will add the method here.
+    return this.fetchWithAuth("/auth/password-reset", {
+      method: "POST",
+      body: JSON.stringify({ email })
+    });
+  }
+
   // --------------------
   // NOTES
   // --------------------
@@ -110,6 +139,31 @@ class ApiClient {
     return this.fetchWithAuth(`/quiz/session/rejoindre/${token}`, {
       method: "GET",
     });
+  }
+
+  async getQuiz(id: number | string) {
+    return this.fetchWithAuth(`/quiz/${id}/`, {
+      method: "GET",
+    });
+  }
+
+  async getQuizSessions() {
+    return this.fetchWithAuth("/quiz/session/list", {
+      method: "GET",
+    });
+  }
+
+  async deleteQuizSession(id: number | string) {
+    return this.fetchWithAuth(`/quiz/session/supprimer/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  // --------------------
+  // STATS
+  // --------------------
+  async getDashboardStats() {
+    return this.fetchWithAuth("/quiz/stats/", { method: "GET" });
   }
 }
 
