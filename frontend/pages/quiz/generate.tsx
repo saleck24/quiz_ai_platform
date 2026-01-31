@@ -281,11 +281,10 @@ export default function GenerateQuizPage() {
                     <button
                       key={n.id}
                       onClick={() => setSelectedNoteId(n.id)}
-                      className={`text-left p-4 rounded-xl border transition-all ${
-                        active
+                      className={`text-left p-4 rounded-xl border transition-all ${active
                           ? "border-indigo-300 bg-indigo-50"
                           : "border-slate-200 hover:border-indigo-200 hover:bg-slate-50"
-                      }`}
+                        }`}
                     >
                       <div className="flex items-start gap-3">
                         <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
@@ -336,7 +335,7 @@ export default function GenerateQuizPage() {
                   type="number"
                   value={nbQuestions}
                   onChange={(e) => setNbQuestions(Number(e.target.value || 5))}
-                  className="h-12"
+                  className="h-12 text-slate-900"
                   min={1}
                   max={50}
                 />
@@ -349,7 +348,7 @@ export default function GenerateQuizPage() {
                 <select
                   value={niveau}
                   onChange={(e) => setNiveau(e.target.value)}
-                  className="h-12 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm"
+                  className="h-12 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900"
                 >
                   <option value="Facile">Facile</option>
                   <option value="Moyen">Moyen</option>
@@ -420,11 +419,10 @@ export default function GenerateQuizPage() {
                             onClick={() =>
                               setAnswers((prev) => ({ ...prev, [q.id]: k }))
                             }
-                            className={`p-3 rounded-xl border text-left transition-all ${
-                              selected === k
+                            className={`p-3 rounded-xl border text-left transition-all ${selected === k
                                 ? "border-indigo-300 bg-indigo-50"
                                 : "border-slate-200 hover:border-indigo-200 hover:bg-slate-50"
-                            }`}
+                              }`}
                           >
                             <span className="font-bold mr-2">{k}.</span>
                             <span className="text-slate-800">
