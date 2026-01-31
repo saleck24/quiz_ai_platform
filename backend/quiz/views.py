@@ -8,7 +8,7 @@ from datetime import timedelta
 import uuid
 
 from .models import Quiz, Question, QuizSession
-from .serializers import QuizSerializer, QuestionSerializer, QuizSessionSerializer
+from .serializers import QuizSerializer, QuizListSerializer, QuestionSerializer, QuizSessionSerializer
 from notes.models import Note
 from core_ia.gemini_engine import GenerateurQuiz
 from core_ia.vector_store import MoteurRecherche
@@ -63,6 +63,15 @@ class GenererQuizView(APIView):
         serializer = QuizSerializer(quiz)
         serializer = QuizSerializer(quiz)
         return Response(serializer.data)
+
+
+# ----------------- LISTER LES QUIZ DE L'UTILISATEUR -----------------
+class QuizListView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = QuizListSerializer
+
+    def get_queryset(self):
+        return Quiz.objects.filter(user=self.request.user).order_by('-created_at')
 
 
 # ----------------- RECUPERER UN QUIZ EXISTANT -----------------
