@@ -71,6 +71,7 @@ class QuizListView(generics.ListAPIView):
     serializer_class = QuizListSerializer
 
     def get_queryset(self):
+        print(f"DEBUG: QuizListView hit by user {self.request.user}")
         return Quiz.objects.filter(user=self.request.user).order_by('-created_at')
 
 
