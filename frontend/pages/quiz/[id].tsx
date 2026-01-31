@@ -1,70 +1,123 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Layout from '@/components/Layout';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { CheckCircle, XCircle, ArrowRight, Clock } from 'lucide-react';
+import { CheckCircle, XCircle, ArrowRight, Clock, Loader2 } from 'lucide-react';
+import { apiClient } from '@/lib/api';
 
-const mockQuestions = [
-    {
-        id: 1,
-        text: "What is the primary function of mitochondria in a cell?",
-        options: ["Protein synthesis", "Energy production", "Cell division", "Waste removal"],
-        answer: 1
-    },
-    {
-        id: 2,
-        text: "Which HTTP security header prevents clickjacking attacks?",
-        options: ["X-XSS-Protection", "X-Frame-Options", "Content-Security-Policy", "Strict-Transport-Security"],
-        answer: 1
-    },
-    {
-        id: 3,
-        text: "What does DNA stand for?",
-        options: ["Deoxyribonucleic Acid", "Dinitrogen Acid", "Dynamic Nucleic Array", "Digital Neural Algorithm"],
-        answer: 0
-    }
-];
+// Types alignés avec le backend
+type ChoiceKey = "A" | "B" | "C" | "D";
+
+type Question = {
+    id: number;
+    question: string;
+    options: Record<string, string>; // Le backend renvoie un JSON {A: "...", B: "..."}
+    reponse: string; // "A", "B", etc.
+    explication: string;
+};
+
+type Quiz = {
+    id: number;
+    questions: Question[];
+    niveau: number;
+};
+
+import { useTranslation } from 'next-i18next';
 
 export default function QuizPage() {
+    const { t } = useTranslation('common');
     const router = useRouter();
     const { id } = router.query;
 
-    const [currentQuestion, setCurrentQuestion] = useState(0);
-    const [selectedOption, setSelectedOption] = useState<number | null>(null);
+    const [quiz, setQuiz] = useState<Quiz | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [selectedOption, setSelectedOption] = useState<ChoiceKey | null>(null);
     const [showFeedback, setShowFeedback] = useState(false);
     const [score, setScore] = useState(0);
 
-    const question = mockQuestions[currentQuestion];
-    const isCorrect = selectedOption === question.answer;
-    const progress = ((currentQuestion + 1) / mockQuestions.length) * 100;
+    useEffect(() => {
+        if (!id) return;
 
-    const handleOptionSelect = (index: number) => {
+        const fetchQuiz = async () => {
+            try {
+                const data = await apiClient.getQuiz(id as string);
+                setQuiz(data);
+            } catch (err: any) {
+                console.error(err);
+                setError(err.message || "Impossible de charger le quiz");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchQuiz();
+    }, [id]);
+
+    if (loading) return (
+        <Layout>
+            <div className="flex justify-center items-center py-20">
+                <Loader2 className="w-10 h-10 animate-spin text-indigo-600" />
+            </div>
+        </Layout>
+    );
+
+    if (error || !quiz || !quiz.questions || quiz.questions.length === 0) return (
+        <Layout>
+            <div className="text-center py-20 max-w-lg mx-auto">
+                <p className="text-red-500 text-lg font-semibold mb-4">{error || "Aucune question trouvée."}</p>
+                <Button onClick={() => router.push('/dashboard')}>Retour</Button>
+            </div>
+        </Layout>
+    );
+
+    const question = quiz.questions[currentQuestionIndex];
+    // S'assurer que les options sont bien parsées (parfois null ou malformé)
+    const options: ChoiceKey[] = ["A", "B", "C", "D"];
+    const isCorrect = selectedOption === question.reponse;
+    const progress = ((currentQuestionIndex + 1) / quiz.questions.length) * 100;
+
+    const handleOptionSelect = (key: ChoiceKey) => {
         if (showFeedback) return;
-        setSelectedOption(index);
+        setSelectedOption(key);
     };
 
     const handleCheck = () => {
         if (selectedOption === null) return;
         setShowFeedback(true);
+
+        // Optionnel : Envoyer la réponse au backend pour adapter le niveau
+        // (On ne bloque pas l'UI pour ça)
+        apiClient.submitQuizAnswer(quiz.id, question.id, selectedOption).catch(console.error);
+
         if (isCorrect) setScore(score + 1);
     };
 
     const handleNext = () => {
-        if (currentQuestion < mockQuestions.length - 1) {
-            setCurrentQuestion(currentQuestion + 1);
+        if (currentQuestionIndex < quiz.questions.length - 1) {
+            setCurrentQuestionIndex(currentQuestionIndex + 1);
             setSelectedOption(null);
             setShowFeedback(false);
         } else {
-            router.push(`/quiz/${id}/results`);
+            // Fin du quiz
+            const total = quiz.questions.length;
+            const finalScore = isCorrect ? score + 1 : score; // inclure la dernière question si correcte
+            // On redirige avec les résultats
+            router.push({
+                pathname: `/quiz/${id}/results`,
+                query: { score: finalScore, total }
+            });
         }
     };
 
     return (
         <Layout>
             <Head>
-                <title>Quiz | QuizGenius</title>
+                <title>{`${t('quiz.results.title')} | ${t('common.appName')}`}</title>
             </Head>
 
             <div className="max-w-3xl mx-auto">
@@ -72,12 +125,8 @@ export default function QuizPage() {
                 <div className="mb-8">
                     <div className="flex justify-between items-center mb-3">
                         <span className="text-sm font-medium text-slate-600">
-                            Question {currentQuestion + 1} of {mockQuestions.length}
+                            Question {currentQuestionIndex + 1} sur {quiz.questions.length}
                         </span>
-                        <div className="flex items-center gap-2 text-slate-500">
-                            <Clock className="w-4 h-4" />
-                            <span className="text-sm font-medium">12:45</span>
-                        </div>
                     </div>
                     <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
                         <div
@@ -90,36 +139,42 @@ export default function QuizPage() {
                 {/* Question Card */}
                 <Card className="mb-6">
                     <CardContent className="p-8">
-                        <h2 className="text-2xl font-semibold text-slate-900 mb-8">{question.text}</h2>
+                        <h2 className="text-2xl font-semibold text-slate-900 mb-8">{question.question}</h2>
 
                         <div className="space-y-3">
-                            {question.options.map((option, index) => {
+                            {options.map((key) => {
+                                const optionText = question.options[key];
+                                if (!optionText) return null; // Si l'option n'existe pas
+
                                 let optionStyles = 'border-slate-200 hover:border-indigo-300 hover:bg-indigo-50';
 
                                 if (showFeedback) {
-                                    if (index === question.answer) {
+                                    if (key === question.reponse) {
                                         optionStyles = 'border-emerald-500 bg-emerald-50 text-emerald-900';
-                                    } else if (index === selectedOption && !isCorrect) {
+                                    } else if (key === selectedOption && !isCorrect) {
                                         optionStyles = 'border-red-500 bg-red-50 text-red-900';
                                     } else {
                                         optionStyles = 'border-slate-200 opacity-50';
                                     }
-                                } else if (selectedOption === index) {
+                                } else if (selectedOption === key) {
                                     optionStyles = 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-500';
                                 }
 
                                 return (
                                     <button
-                                        key={index}
-                                        onClick={() => handleOptionSelect(index)}
+                                        key={key}
+                                        onClick={() => handleOptionSelect(key)}
                                         disabled={showFeedback}
                                         className={`w-full p-5 rounded-xl border-2 text-left transition-all duration-200 flex items-center justify-between ${optionStyles}`}
                                     >
-                                        <span className="font-medium text-slate-900">{option}</span>
-                                        {showFeedback && index === question.answer && (
+                                        <div className="flex items-center gap-3">
+                                            <span className="font-bold text-slate-400">{key}.</span>
+                                            <span className="font-medium text-slate-900">{optionText}</span>
+                                        </div>
+                                        {showFeedback && key === question.reponse && (
                                             <CheckCircle className="w-6 h-6 text-emerald-500" />
                                         )}
-                                        {showFeedback && index === selectedOption && !isCorrect && (
+                                        {showFeedback && key === selectedOption && !isCorrect && (
                                             <XCircle className="w-6 h-6 text-red-500" />
                                         )}
                                     </button>
@@ -143,13 +198,10 @@ export default function QuizPage() {
                                 </div>
                                 <div>
                                     <p className={`font-semibold ${isCorrect ? 'text-emerald-900' : 'text-amber-900'}`}>
-                                        {isCorrect ? 'Correct!' : 'Not quite right'}
+                                        {isCorrect ? 'Correct !' : 'Incorrect'}
                                     </p>
                                     <p className={`text-sm mt-1 ${isCorrect ? 'text-emerald-700' : 'text-amber-700'}`}>
-                                        {isCorrect
-                                            ? 'Great job! You got this one right.'
-                                            : `The correct answer is: ${question.options[question.answer]}`
-                                        }
+                                        {question.explication || (isCorrect ? "Bravo !" : `La bonne réponse est ${question.reponse}`)}
                                     </p>
                                 </div>
                             </div>
@@ -165,14 +217,14 @@ export default function QuizPage() {
                             disabled={selectedOption === null}
                             className="h-12 px-8 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg shadow-indigo-500/25"
                         >
-                            Check Answer
+                            Valider la réponse
                         </Button>
                     ) : (
                         <Button
                             onClick={handleNext}
                             className="h-12 px-8 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg shadow-indigo-500/25 group"
                         >
-                            {currentQuestion === mockQuestions.length - 1 ? 'View Results' : 'Next Question'}
+                            {currentQuestionIndex === quiz.questions.length - 1 ? 'Voir les résultats' : 'Question suivante'}
                             <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </Button>
                     )}
