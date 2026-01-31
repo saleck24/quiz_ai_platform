@@ -6,6 +6,8 @@ import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { CheckCircle, XCircle, ArrowRight, Loader2 } from 'lucide-react';
 import { apiClient } from '@/lib/api';
+import { GetServerSideProps } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 type ChoiceKey = "A" | "B" | "C" | "D";
 
@@ -121,7 +123,7 @@ export default function SharedQuizPage() {
                 <div className="mb-8">
                     <div className="flex justify-between items-center mb-3">
                         <span className="text-sm font-medium text-slate-600">
-                            Question {currentQuestionIndex + 1} sur {quiz.questions.length}
+                            Question {currentQuestionIndex + 1} من {quiz.questions.length}
                         </span>
                     </div>
                     <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
@@ -225,3 +227,11 @@ export default function SharedQuizPage() {
         </div>
     );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+    return {
+        props: {
+            ...(await serverSideTranslations(locale ?? 'en', ['common'])),
+        },
+    };
+};
