@@ -1,6 +1,5 @@
 # 🧠 Quiz AI Platform
 
-![Banner](./docs/images/banner.png)
 
 [![Python](https://img.shields.io/badge/Python-3.13-blue?style=for-the-badge&logo=python)](https://www.python.org/)
 [![Django](https://img.shields.io/badge/Django-5.0+-092E20?style=for-the-badge&logo=django)](https://www.djangoproject.com/)
@@ -111,15 +110,7 @@ L'API est entièrement documentée selon les standards OpenAPI. Une fois le serv
 - **Redoc** : `http://localhost:8000/api/redoc/` (Statique)
 
 ---
-
-## 👨‍💻 Portfolio & Contact
-
 Ce projet a été conçu pour démontrer des compétences en architecture Full-stack, intégration d'IA et DevOps.
-
-- **Auteur** : [Votre Nom]
-- **LinkedIn** : [Lien LinkedIn]
-- **Portfolio** : [Lien Portfolio]
-
 ---
 
 *Développé avec ❤️ pour l'innovation éducative.*
