@@ -30,7 +30,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['backend', 'localhost', '127.0.0.1', 'frontend', '0.0.0.0']
 
 
 # Application definition
@@ -54,6 +54,9 @@ INSTALLED_APPS = [
     'quiz',
     'core_ia',
     'accounts',
+
+    # Swagger Documentation
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -159,6 +162,21 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny', 
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Quiz AI Platform API',
+    'DESCRIPTION': 'Plateforme intelligente de génération et gestion de quiz basée sur l\'IA.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_PATCH': True,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,
+        'persistAuthorization': True,
+        'displayOperationId': True,
+    },
 }
 
 SIMPLE_JWT = {
@@ -217,3 +235,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 if DEBUG:
     CSP_ENABLED = False
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

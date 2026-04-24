@@ -19,10 +19,6 @@ class NoteUploadView(generics.CreateAPIView):
         # Traitement du fichier uploadé
         result = process_file(note.file.path)
 
-        # Pour l’instant on affiche juste dans la console
-        print("TEXT:", result["text"][:500])
-        print("CHUNKS:", len(result["chunks"]))
-        
         # sauvegarde des chunks
         for i, chunk in enumerate(result["chunks"]):
             Chunk.objects.create(note=note, content=chunk, index=i)
@@ -30,7 +26,6 @@ class NoteUploadView(generics.CreateAPIView):
         # --- STOCKER DANS LE MOTEUR RAG ---
         moteur = MoteurRecherche()
         moteur.stocker_extraits(result["chunks"])
-        print("Titres disponibles :", moteur.obtenir_liste_titres())
 
 class NoteListView(generics.ListAPIView):
     serializer_class = NoteSerializer

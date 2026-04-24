@@ -12,12 +12,11 @@ class GenerateurQuiz:
         self.api_key = os.getenv("GOOGLE_API_KEY")
         self.client = genai.Client(api_key=self.api_key)
         
-        # --- STRATÉGIE DE SECOURS VISIBLE ---
-        # Le code essaiera ces modèles dans l'ordre en cas d'erreur ou de quota atteint.
         self.modeles_prioritaires = [
-            "models/gemma-3-12b-it",   # Premier choix (Ton modèle préféré)
-            "models/gemma-3-4b-it",    # Secours 1 (Plus léger/rapide)
-            "models/gemini-1.5-flash"  # Secours 2 (Le plus robuste au monde)
+            "models/gemini-2.0-flash",       # Très rapide et récent
+            "models/gemini-flash-latest",    # Stable
+            "models/gemini-1.5-flash",       # Classique
+            "models/gemma-3-12b-it"          # Votre modèle préféré
         ]
         
         # Mémoire pour éviter que l'IA ne pose deux fois la même question

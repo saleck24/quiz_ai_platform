@@ -45,11 +45,8 @@ class GenererQuizView(APIView):
         questions_creees = []
         for _ in range(nb_questions):
             contexte = moteur.chercher_contexte()
-            print("Contexte choisi:", contexte)
             q_data = gen.generer_question_unique(contexte, niveau)
-            print("Données générées:", q_data)
             if q_data:
-                print("Création question...")
                 question = Question.objects.create(
                     quiz=quiz,
                     question=q_data['question'],
@@ -61,7 +58,6 @@ class GenererQuizView(APIView):
                 questions_creees.append(question)
 
         serializer = QuizSerializer(quiz)
-        serializer = QuizSerializer(quiz)
         return Response(serializer.data)
 
 
@@ -71,7 +67,6 @@ class QuizListView(generics.ListAPIView):
     serializer_class = QuizListSerializer
 
     def get_queryset(self):
-        print(f"DEBUG: QuizListView hit by user {self.request.user}")
         return Quiz.objects.filter(user=self.request.user).order_by('-created_at')
 
 

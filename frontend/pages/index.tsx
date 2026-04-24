@@ -11,27 +11,27 @@ export default function Home() {
   const { t } = useTranslation('common');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
+    <div className="min-h-screen text-slate-100">
       <Head>
-        <title>QuizGenius - {t('landing.hero.titleHighlight')}</title>
+        <title>{`QuizGenius - ${t('landing.hero.titleHighlight')}`}</title>
         <meta name="description" content={t('landing.hero.subtitle')} />
       </Head>
 
       {/* Navigation */}
-      <nav className="fixed w-full top-0 z-50 backdrop-blur-xl bg-white/70 border-b border-slate-200/50">
+      <nav className="fixed w-full top-0 z-50 glass-card !bg-background/60 !border-b !border-white/5">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl ai-button flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-slate-900">{t('common.appName')}</span>
+            <span className="text-xl font-bold ai-gradient-text">{t('common.appName')}</span>
           </div>
           <div className="flex items-center gap-3">
             <Link href="/login">
-              <Button variant="ghost" className="text-slate-700">{t('common.login')}</Button>
+              <Button variant="ghost" className="text-slate-300 hover:text-white hover:bg-white/5">{t('common.login')}</Button>
             </Link>
             <Link href="/register">
-              <Button className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg shadow-indigo-500/25">
+              <Button className="ai-button border-none text-white shadow-lg shadow-primary/25">
                 {t('common.register')}
               </Button>
             </Link>
@@ -40,48 +40,48 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 border border-indigo-100 mb-8">
-            <Sparkles className="w-4 h-4 text-indigo-600" />
-            <span className="text-sm font-medium text-indigo-700">{t('landing.badge')}</span>
+      <section className="pt-48 pb-20 px-6 relative overflow-hidden">
+        <div className="max-w-6xl mx-auto text-center relative z-10">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card mb-8 border-primary/20">
+            <Sparkles className="w-4 h-4 text-secondary" />
+            <span className="text-sm font-medium ai-gradient-text">{t('landing.badge')}</span>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-bold text-slate-900 mb-6 leading-tight">
-            {t('landing.hero.title')}
-            <span className="block bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-8xl font-black mb-6 leading-tight tracking-tight">
+            <span className="text-white">{t('landing.hero.title')}</span>
+            <span className="block ai-gradient-text">
               {t('landing.hero.titleHighlight')}
             </span>
           </h1>
 
-          <p className="text-xl text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
             {t('landing.hero.subtitle')}
           </p>
 
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-6">
             <Link href="/register">
-              <Button size="lg" className="h-14 px-8 text-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-xl shadow-indigo-500/30 group">
+              <Button size="lg" className="h-16 px-10 text-lg ai-button border-none shadow-2xl shadow-primary/40 group">
                 {t('landing.hero.cta')}
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
             <Link href="/login">
-              <Button variant="outline" size="lg" className="h-14 px-8 text-lg border-slate-300 hover:bg-slate-50">
+              <Button variant="outline" size="lg" className="h-16 px-10 text-lg glass-card border-white/10 hover:bg-white/5">
                 {t('landing.hero.existingUser')}
               </Button>
             </Link>
           </div>
 
           {/* Stats */}
-          <div className="mt-16 grid grid-cols-3 gap-8 max-w-2xl mx-auto">
+          <div className="mt-24 grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
             {[
               { value: '10K+', label: 'Active Students' },
               { value: '50K+', label: 'Quizzes Generated' },
               { value: '98%', label: 'Satisfaction Rate' },
             ].map((stat, i) => (
-              <div key={i} className="text-center">
-                <div className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">{stat.value}</div>
-                <div className="text-sm text-slate-500 mt-1">{stat.label}</div>
+              <div key={i} className="glass-card p-6 rounded-2xl ai-glow">
+                <div className="text-3xl font-black ai-gradient-text">{stat.value}</div>
+                <div className="text-xs text-slate-500 uppercase tracking-widest mt-2 font-bold">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -89,10 +89,10 @@ export default function Home() {
       </section>
 
       {/* Features Grid */}
-      <section id="features" className="py-24 px-6 bg-slate-900">
+      <section id="features" className="py-32 px-6 relative">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">{t('landing.features.title')}</h2>
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">{t('landing.features.title')}</h2>
             <p className="text-slate-400 text-lg max-w-xl mx-auto">{t('landing.features.subtitle')}</p>
           </div>
 
@@ -126,15 +126,16 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 px-6">
+      <section className="py-32 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="p-12 rounded-3xl bg-gradient-to-br from-indigo-600 to-purple-700 shadow-2xl shadow-indigo-500/30">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">{t('landing.cta.title')}</h2>
-            <p className="text-indigo-100 text-lg mb-8">{t('landing.cta.subtitle')}</p>
+          <div className="p-16 rounded-[2.5rem] ai-button border-none shadow-3xl shadow-primary/50 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-3xl -translate-y-1/2 translate-x-1/2 rounded-full" />
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 relative z-10">{t('landing.cta.title')}</h2>
+            <p className="text-indigo-100 text-xl mb-12 max-w-xl mx-auto relative z-10">{t('landing.cta.subtitle')}</p>
             <Link href="/register">
-              <Button size="lg" className="h-14 px-10 text-lg bg-white text-indigo-700 hover:bg-indigo-50 shadow-xl">
+              <Button size="lg" className="h-16 px-12 text-xl bg-white text-primary hover:bg-slate-50 shadow-2xl relative z-10">
                 {t('landing.cta.button')}
-                <ArrowRight className="ml-2 w-5 h-5" />
+                <ArrowRight className="ml-2 w-6 h-6" />
               </Button>
             </Link>
           </div>
@@ -142,15 +143,15 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 border-t border-slate-200">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-white" />
+      <footer className="py-12 border-t border-white/5">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl ai-button flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-white" />
             </div>
-            <span className="font-semibold text-slate-900">{t('common.appName')}</span>
+            <span className="font-bold text-xl ai-gradient-text">{t('common.appName')}</span>
           </div>
-          <p className="text-slate-500 text-sm">© {new Date().getFullYear()} {t('common.appName')}. All rights reserved.</p>
+          <p className="text-slate-500 text-sm">© {new Date().getFullYear()} {t('common.appName')}. Engineered with Intelligence.</p>
         </div>
       </footer>
     </div>
@@ -164,11 +165,11 @@ function FeatureCard({ icon, title, description, gradient }: {
   gradient: string;
 }) {
   return (
-    <div className="group p-6 rounded-2xl bg-slate-800/50 border border-slate-700/50 hover:border-slate-600 transition-all duration-300 hover:-translate-y-1">
-      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
+    <div className="group p-8 glass-card rounded-3xl transition-all duration-500 hover:-translate-y-2 hover:bg-white/5">
+      <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white mb-6 shadow-2xl group-hover:scale-110 transition-transform duration-500`}>
         {icon}
       </div>
-      <h3 className="text-lg font-semibold text-white mb-2">{title}</h3>
+      <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
       <p className="text-slate-400 text-sm leading-relaxed">{description}</p>
     </div>
   );

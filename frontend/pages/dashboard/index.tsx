@@ -18,6 +18,7 @@ import {
   Plus,
   ArrowRight,
   Loader2,
+  Sparkles,
 } from 'lucide-react';
 import { apiClient } from '@/lib/api';
 
@@ -64,17 +65,30 @@ export default function Dashboard() {
         try {
           const profile = await apiClient.getUserProfile();
           if (profile) {
-            setUserName(profile.first_name || profile.username || 'Utilisateur');
+            // ✅ Formatage intelligent du nom : "Prénom NOM" ou "Username" capitalisé
+            let displayName = 'Utilisateur';
+            
+            if (profile.first_name || profile.last_name) {
+              const firstName = profile.first_name ? 
+                profile.first_name.charAt(0).toUpperCase() + profile.first_name.slice(1).toLowerCase() : '';
+              const lastName = profile.last_name ? 
+                profile.last_name.toUpperCase() : '';
+              displayName = `${firstName} ${lastName}`.trim();
+            } else if (profile.username) {
+              displayName = profile.username.charAt(0).toUpperCase() + profile.username.slice(1);
+            }
+
+            setUserName(displayName);
             // Mettre à jour le localStorage pour la prochaine fois
-            localStorage.setItem('user', JSON.stringify(profile));
+            localStorage.setItem('user', JSON.stringify({ ...profile, display_name: displayName }));
           }
         } catch (e) {
           console.error('Erreur chargement profil:', e);
-          // Fallback au localStorage si API échoue
+          // Fallback au localStorage
           const userStr = localStorage.getItem('user');
           if (userStr) {
             const u = JSON.parse(userStr);
-            setUserName(u.first_name || u.username || 'Utilisateur');
+            setUserName(u.display_name || u.first_name || u.username || 'Utilisateur');
           }
         }
 
@@ -235,20 +249,20 @@ export default function Dashboard() {
     <Layout>
       <Head>
         <title>
-          {t('common.dashboard')} | {t('common.appName')}
+          {`${t('common.dashboard')} | ${t('common.appName')}`}
         </title>
       </Head>
 
       {/* Welcome Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900">
+      <div className="mb-10">
+        <h1 className="text-4xl font-black ai-gradient-text tracking-tight">
           {t('dashboard.welcome')}, {userName}! 👋
         </h1>
-        <p className="text-slate-500 mt-1">{t('dashboard.subtitle')}</p>
+        <p className="text-slate-400 mt-2 font-medium">{t('dashboard.subtitle')}</p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         <StatCard
           title={t('dashboard.stats.documents')}
           value={stats.documents.toString()}
@@ -280,16 +294,16 @@ export default function Dashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid lg:grid-cols-3 gap-6 mb-8">
-        <Card className="lg:col-span-2 bg-gradient-to-br from-indigo-600 to-purple-600 border-0 text-white overflow-hidden relative">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-          <CardContent className="p-8 relative z-10">
-            <h3 className="text-2xl font-bold mb-2">{t('dashboard.cta.title')}</h3>
-            <p className="text-indigo-100 mb-6 max-w-md">{t('dashboard.cta.subtitle')}</p>
+      <div className="grid lg:grid-cols-3 gap-8 mb-10">
+        <Card className="lg:col-span-2 ai-button border-none text-white overflow-hidden relative group">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl group-hover:scale-110 transition-transform duration-700"></div>
+          <CardContent className="p-10 relative z-10">
+            <h3 className="text-3xl font-black mb-4 tracking-tight">{t('dashboard.cta.title')}</h3>
+            <p className="text-indigo-100 text-lg mb-8 max-w-md opacity-90">{t('dashboard.cta.subtitle')}</p>
 
             <div className="flex gap-4 flex-wrap">
               <Link href="/documents/upload">
-                <Button className="bg-white text-indigo-700 hover:bg-indigo-50 shadow-lg">
+                <Button className="h-12 px-6 bg-white text-primary font-bold hover:bg-slate-50 shadow-2xl">
                   <Plus className="w-5 h-5 mr-2" />
                   {t('dashboard.cta.uploadDocument')}
                 </Button>
@@ -297,7 +311,7 @@ export default function Dashboard() {
 
               <Button
                 variant="outline"
-                className="bg-transparent border-2 border-white/40 text-white hover:bg-white hover:text-indigo-600 transition-all font-semibold"
+                className="h-12 px-6 bg-transparent border-2 border-white/30 text-white hover:bg-white/10 transition-all font-bold backdrop-blur-sm"
                 onClick={generateQuizFromLatestNote}
                 disabled={isGeneratingQuiz}
               >
@@ -308,6 +322,7 @@ export default function Dashboard() {
                   </>
                 ) : (
                   <>
+                    <Sparkles className="w-5 h-5 mr-2" />
                     {t('dashboard.cta.generateQuiz')}
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </>
@@ -316,35 +331,38 @@ export default function Dashboard() {
             </div>
 
             {quizError && (
-              <div className="mt-4 p-3 rounded-xl bg-white/10 border border-white/20 text-white/90 text-sm">
+              <div className="mt-6 p-4 rounded-2xl bg-black/20 border border-white/10 text-white/90 text-sm backdrop-blur-md">
                 {quizError}
               </div>
             )}
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="glass-card border-white/5">
           <CardHeader>
-            <CardTitle className="text-lg">{t('dashboard.recentActivity')}</CardTitle>
+            <CardTitle className="text-xl font-bold text-white">{t('dashboard.recentActivity')}</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
             {recentActivity.length === 0 ? (
-              <p className="text-sm text-slate-500 text-center py-4">
+              <p className="text-sm text-slate-500 text-center py-8">
                 Aucune activité récente.
               </p>
             ) : (
               recentActivity.map((item, i) => (
                 <div
                   key={i}
-                  className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0"
+                  className="flex items-center justify-between py-1 group"
                 >
-                  <div>
-                    <p className="text-sm font-medium text-slate-900">{item.action}</p>
-                    <p className="text-xs text-slate-500">{item.subject}</p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-primary ai-glow" />
+                    <div>
+                      <p className="text-sm font-bold text-white group-hover:text-primary transition-colors">{item.action}</p>
+                      <p className="text-xs text-slate-500 font-medium">{item.subject}</p>
+                    </div>
                   </div>
                   <div className="text-right">
-                    {item.score && <p className="text-sm font-semibold text-emerald-600">{item.score}</p>}
-                    <p className="text-xs text-slate-400">{formatDate(item.timestamp)}</p>
+                    {item.score && <p className="text-sm font-black ai-gradient-text">{item.score}</p>}
+                    <p className="text-[10px] text-slate-600 font-bold uppercase tracking-tighter">{formatDate(item.timestamp)}</p>
                   </div>
                 </div>
               ))
@@ -354,95 +372,88 @@ export default function Dashboard() {
       </div>
 
       {/* Recent Documents */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>{t('dashboard.recentDocuments')}</CardTitle>
-          <Link href="/documents" className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+      <Card className="glass-card border-white/5 overflow-hidden">
+        <CardHeader className="flex flex-row items-center justify-between border-b border-white/5 pb-6">
+          <CardTitle className="text-2xl font-bold text-white tracking-tight">{t('dashboard.recentDocuments')}</CardTitle>
+          <Link href="/documents" className="text-sm ai-gradient-text hover:opacity-80 transition-opacity font-bold">
             {t('dashboard.viewAll')} →
           </Link>
         </CardHeader>
 
-        <CardContent>
+        <CardContent className="pt-8">
           {isLoadingNotes ? (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-10 h-10 animate-spin text-primary" />
             </div>
           ) : errorNotes ? (
-            <div className="text-center py-8">
-              <p className="text-red-600 mb-4">{errorNotes}</p>
-              <Button onClick={fetchNotes} variant="outline">
+            <div className="text-center py-12">
+              <p className="text-red-400 mb-6 font-medium">{errorNotes}</p>
+              <Button onClick={fetchNotes} variant="outline" className="glass-card">
                 Réessayer
               </Button>
             </div>
           ) : recentNotes.length === 0 ? (
-            <div className="text-center py-8 text-slate-500">
-              <FileText className="w-12 h-12 mx-auto mb-3 text-slate-300" />
-              <p>Aucun document uploadé</p>
+            <div className="text-center py-16">
+              <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <FileText className="w-10 h-10 text-slate-700" />
+              </div>
+              <p className="text-slate-500 font-medium text-lg">Aucun document uploadé</p>
               <Link href="/documents/upload">
-                <Button variant="outline" className="mt-4">
+                <Button variant="outline" className="mt-8 glass-card border-white/10 hover:bg-white/5">
                   <Plus className="w-4 h-4 mr-2" />
                   Uploader votre premier document
                 </Button>
               </Link>
             </div>
           ) : (
-            <div className="grid md:grid-cols-3 gap-4">
+            <div className="grid md:grid-cols-3 gap-6">
               {recentNotes.map((note) => {
-                // ✅ Normaliser DRF -> UI
                 const fileUrl = note.file_url || note.file || '';
                 const title =
                   note.title ||
                   (fileUrl ? decodeURIComponent(fileUrl.split('/').pop() || '') : 'Document');
-                const fileType = note.file_type; // peut être undefined
+                const fileType = note.file_type;
                 const uploadedAt = note.uploaded_at;
 
                 return (
                   <div
                     key={note.id}
-                    className="p-4 rounded-xl border border-slate-200 hover:border-indigo-200 hover:bg-indigo-50/50 transition-all cursor-pointer group"
+                    className="p-6 rounded-[2rem] glass-card border-white/5 hover:border-primary/30 hover:bg-white/5 transition-all cursor-pointer group relative overflow-hidden"
                     onClick={() => {
-                      // Click: ouvrir le doc si dispo
                       if (fileUrl) window.open(fileUrl, '_blank', 'noopener,noreferrer');
                     }}
                   >
-                    <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center mb-3 group-hover:bg-indigo-200 transition-colors">
-                      <FileText className="w-5 h-5 text-indigo-600" />
+                    <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary to-secondary opacity-0 group-hover:opacity-100 transition-opacity" />
+                    
+                    <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                      <FileText className="w-6 h-6 text-primary" />
                     </div>
 
-                    {/* ✅ Title safe */}
-                    <p className="font-medium text-slate-900 text-sm mb-1 truncate">
+                    <p className="font-bold text-white text-lg mb-2 truncate group-hover:text-primary transition-colors">
                       {title || 'Document'}
                     </p>
 
-                    {/* ✅ No crash: getFileIcon safe */}
-                    <div className="flex items-center flex-wrap gap-x-2 text-xs text-slate-500">
-                      <span>{getFileIcon(fileType, fileUrl)}</span>
+                    <div className="flex items-center flex-wrap gap-x-3 text-xs text-slate-500 font-bold uppercase tracking-widest">
+                      <span className="px-2 py-1 bg-white/5 rounded-md text-slate-400">{getFileIcon(fileType, fileUrl)}</span>
 
                       {uploadedAt && (
-                        <>
-                          <span>•</span>
-                          <span>{formatDate(uploadedAt)}</span>
-                        </>
+                        <span className="opacity-60">{formatDate(uploadedAt)}</span>
                       )}
 
                       {typeof note.file_size === 'number' && (
-                        <>
-                          <span>•</span>
-                          <span>{formatFileSize(note.file_size)}</span>
-                        </>
+                        <span className="opacity-60">{formatFileSize(note.file_size)}</span>
                       )}
                     </div>
 
-                    {/* ✅ Link open */}
                     {fileUrl && (
                       <a
                         href={fileUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="mt-3 inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-700"
+                        className="mt-6 flex items-center text-sm font-black ai-gradient-text"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        📄 Ouvrir le document
+                        📄 Ouvrir <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                       </a>
                     )}
                   </div>
@@ -470,16 +481,17 @@ function StatCard({
   gradient: string;
 }) {
   return (
-    <Card className="overflow-hidden">
-      <CardContent className="p-6">
-        <div className="flex items-start justify-between">
+    <Card className="glass-card border-white/5 overflow-hidden group">
+      <CardContent className="p-8 relative">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-700" />
+        <div className="flex items-start justify-between relative z-10">
           <div>
-            <p className="text-sm text-slate-500 mb-1">{title}</p>
-            <p className="text-3xl font-bold text-slate-900">{value}</p>
-            {change && <p className="text-xs text-emerald-600 mt-1">{change}</p>}
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">{title}</p>
+            <p className="text-4xl font-black text-white group-hover:ai-gradient-text transition-colors">{value}</p>
+            {change && <p className="text-xs font-bold text-emerald-400 mt-2 flex items-center gap-1"><TrendingUp className="w-3 h-3"/> {change}</p>}
           </div>
           <div
-            className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white shadow-lg`}
+            className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white shadow-2xl group-hover:scale-110 transition-transform duration-500`}
           >
             {icon}
           </div>

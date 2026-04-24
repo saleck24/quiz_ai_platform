@@ -8,7 +8,10 @@ import { useRouter } from 'next/router';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { apiClient } from '@/lib/api';
-import { Sparkles, Mail, Lock, User, ArrowRight, Check, Eye, EyeOff } from 'lucide-react';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { GetStaticProps } from 'next';
+import { Sparkles, Mail, Lock, User, ArrowRight, Check, Eye, EyeOff, BookOpen, BrainCircuit } from 'lucide-react';
 
 const registerSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
@@ -27,6 +30,7 @@ const registerSchema = z.object({
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
+    const { t } = useTranslation('common');
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -51,8 +55,6 @@ export default function RegisterPage() {
         setError(null);
 
         try {
-            console.log('Tentative d\'inscription:', data.email);
-
             // 1. Appel à l'API via apiClient
             const result = await apiClient.register({
                 name: data.name,
@@ -60,9 +62,6 @@ export default function RegisterPage() {
                 password: data.password,
                 confirmPassword: data.confirmPassword,
             });
-
-            // 3. Succès (apiClient throw si erreur)
-            console.log('Inscription réussie:', result);
 
             // 5. Rediriger vers la page de login
             router.push('/login?registered=true'); // Paramètre pour afficher un message de succès
@@ -83,67 +82,72 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen flex">
+        <div className="min-h-screen flex text-white">
             <Head>
-                <title>Create Account | QuizGenius</title>
+                <title>{`Create Account | ${t('common.appName')}`}</title>
             </Head>
 
             {/* Left Panel - Decorative */}
-            <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-500 p-12 flex-col justify-between relative overflow-hidden">
-                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-30"></div>
+            <div className="hidden lg:flex lg:w-1/2 ai-button p-16 flex-col justify-between relative overflow-hidden">
+                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20 scale-150"></div>
 
                 <div className="relative z-10">
                     <Link href="/" className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center">
                             <Sparkles className="w-6 h-6 text-white" />
                         </div>
-                        <span className="text-2xl font-bold text-white">QuizGenius</span>
+                        <span className="text-3xl font-black text-white tracking-tighter">QuizGenius</span>
                     </Link>
                 </div>
 
-                <div className="relative z-10">
-                    <h2 className="text-3xl font-bold text-white mb-6">Start your learning journey today</h2>
-                    <ul className="space-y-4">
+                <div className="relative z-10 max-w-lg">
+                    <h2 className="text-6xl font-black text-white mb-8 tracking-tighter leading-[0.9]">
+                        L'IA qui <br/><span className="text-secondary">révolutionne</span> <br/>vos études.
+                    </h2>
+                    
+                    <div className="grid grid-cols-1 gap-4 mt-12">
                         {[
-                            "Upload any document format",
-                            "AI generates smart quizzes",
-                            "Track your progress",
-                            "Share with classmates",
-                        ].map((feature, i) => (
-                            <li key={i} className="flex items-center gap-3 text-white/90">
-                                <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
-                                    <Check className="w-4 h-4 text-white" />
+                            { icon: BrainCircuit, text: "Génération de quiz par IA", desc: "Transformez vos PDF en questions pertinentes" },
+                            { icon: BookOpen, text: "Apprentissage Adaptatif", desc: "L'IA s'ajuste à votre niveau réel" },
+                            { icon: Check, text: "Succès Garanti", desc: "Boostez vos notes de 40% en moyenne" }
+                        ].map((item, i) => (
+                            <div key={i} className="flex items-center gap-5 p-6 glass-card border-white/10 rounded-3xl group hover:bg-white/5 transition-all">
+                                <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <item.icon className="w-6 h-6 text-secondary" />
                                 </div>
-                                {feature}
-                            </li>
+                                <div>
+                                    <h3 className="font-bold text-white text-lg">{item.text}</h3>
+                                    <p className="text-white/50 text-sm">{item.desc}</p>
+                                </div>
+                            </div>
                         ))}
-                    </ul>
+                    </div>
                 </div>
             </div>
 
             {/* Right Panel - Form */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-slate-50">
-                <div className="w-full max-w-md">
-                    <div className="lg:hidden mb-8 flex items-center gap-2">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center">
-                            <Sparkles className="w-5 h-5 text-white" />
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 relative">
+                <div className="w-full max-w-md relative z-10">
+                    <div className="lg:hidden mb-12 flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-xl ai-button flex items-center justify-center">
+                            <Sparkles className="w-6 h-6 text-white" />
                         </div>
-                        <span className="text-xl font-bold text-slate-900">QuizGenius</span>
+                        <span className="text-2xl font-black ai-gradient-text">{t('common.appName')}</span>
                     </div>
 
-                    <h1 className="text-3xl font-bold text-slate-900 mb-2">Create your account</h1>
-                    <p className="text-slate-600 mb-8">Join thousands of students learning smarter</p>
+                    <h1 className="text-5xl font-black text-white mb-3 tracking-tight">Inscription</h1>
+                    <p className="text-slate-400 mb-10 text-lg font-medium">Rejoignez des milliers d'étudiants connectés</p>
 
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                         <div className="space-y-2">
-                            <label htmlFor="name" className="text-sm font-medium text-slate-700">Full Name</label>
+                            <label htmlFor="name" className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Nom complet</label>
                             <div className="relative">
-                                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
                                 <Input
                                     id="name"
                                     type="text"
                                     placeholder="John Doe"
-                                    className="pl-10 h-12 bg-white text-slate-900 placeholder:text-slate-400 border-slate-200"
+                                    className="pl-12 h-14 glass-card !bg-white/5 border-white/10 text-white placeholder:text-slate-600 focus:border-primary/50 focus:ring-primary/20 rounded-2xl"
                                     disabled={isLoading}
                                     error={errors.name?.message}
                                     {...register('name')}
@@ -152,14 +156,14 @@ export default function RegisterPage() {
                         </div>
 
                         <div className="space-y-2">
-                            <label htmlFor="email" className="text-sm font-medium text-slate-700">Email</label>
+                            <label htmlFor="email" className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Email</label>
                             <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
                                 <Input
                                     id="email"
                                     type="email"
                                     placeholder="you@example.com"
-                                    className="pl-10 h-12 bg-white text-slate-900 placeholder:text-slate-400 border-slate-200"
+                                    className="pl-12 h-14 glass-card !bg-white/5 border-white/10 text-white placeholder:text-slate-600 focus:border-primary/50 focus:ring-primary/20 rounded-2xl"
                                     disabled={isLoading}
                                     error={errors.email?.message}
                                     {...register('email')}
@@ -168,14 +172,14 @@ export default function RegisterPage() {
                         </div>
 
                         <div className="space-y-2">
-                            <label htmlFor="password" className="text-sm font-medium text-slate-700">Password</label>
+                            <label htmlFor="password" className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Mot de passe</label>
                             <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
                                 <Input
                                     id="password"
                                     type={showPassword ? "text" : "password"}
-                                    placeholder="Create a strong password"
-                                    className="pl-10 pr-10 h-12 bg-white text-slate-900 placeholder:text-slate-400 border-slate-200"
+                                    placeholder="Choisissez un mot de passe fort"
+                                    className="pl-12 pr-12 h-14 glass-card !bg-white/5 border-white/10 text-white placeholder:text-slate-600 focus:border-primary/50 focus:ring-primary/20 rounded-2xl"
                                     disabled={isLoading}
                                     error={errors.password?.message}
                                     {...register('password')}
@@ -183,7 +187,7 @@ export default function RegisterPage() {
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
                                 >
                                     {showPassword ? (
                                         <EyeOff className="w-5 h-5" />
@@ -192,11 +196,10 @@ export default function RegisterPage() {
                                     )}
                                 </button>
                             </div>
-                            {/* Password Strength Indicator */}
-                            <div className="grid grid-cols-2 gap-2 mt-3">
+                            <div className="grid grid-cols-2 gap-2 mt-4 px-1">
                                 {passwordChecks.map((check, i) => (
-                                    <div key={i} className={`flex items-center gap-2 text-xs ${check.valid ? 'text-emerald-600' : 'text-slate-400'}`}>
-                                        <div className={`w-4 h-4 rounded-full flex items-center justify-center ${check.valid ? 'bg-emerald-100' : 'bg-slate-100'}`}>
+                                    <div key={i} className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider ${check.valid ? 'text-secondary' : 'text-slate-600'}`}>
+                                        <div className={`w-4 h-4 rounded-lg flex items-center justify-center ${check.valid ? 'bg-secondary/20' : 'bg-white/5'}`}>
                                             {check.valid && <Check className="w-3 h-3" />}
                                         </div>
                                         {check.label}
@@ -206,14 +209,14 @@ export default function RegisterPage() {
                         </div>
 
                         <div className="space-y-2">
-                            <label htmlFor="confirmPassword" className="text-sm font-medium text-slate-700">Confirm Password</label>
+                            <label htmlFor="confirmPassword" className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Confirmer le mot de passe</label>
                             <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
                                 <Input
                                     id="confirmPassword"
                                     type={showConfirmPassword ? "text" : "password"}
-                                    placeholder="Confirm your password"
-                                    className="pl-10 pr-10 h-12 bg-white text-slate-900 placeholder:text-slate-400 border-slate-200"
+                                    placeholder="Confirmez votre mot de passe"
+                                    className="pl-12 pr-12 h-14 glass-card !bg-white/5 border-white/10 text-white placeholder:text-slate-600 focus:border-primary/50 focus:ring-primary/20 rounded-2xl"
                                     disabled={isLoading}
                                     error={errors.confirmPassword?.message}
                                     {...register('confirmPassword')}
@@ -221,7 +224,7 @@ export default function RegisterPage() {
                                 <button
                                     type="button"
                                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
                                 >
                                     {showConfirmPassword ? (
                                         <EyeOff className="w-5 h-5" />
@@ -233,25 +236,25 @@ export default function RegisterPage() {
                         </div>
 
                         {error && (
-                            <div className="p-4 text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl">
+                            <div className="p-4 text-sm font-bold text-red-400 bg-red-400/10 border border-red-400/20 rounded-2xl animate-shake">
                                 {error}
                             </div>
                         )}
 
                         <Button
                             type="submit"
-                            className="w-full h-12 text-base bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg shadow-indigo-500/25 group"
+                            className="w-full h-14 text-lg font-black ai-button border-none shadow-2xl shadow-primary/30 group mt-4"
                             isLoading={isLoading}
                         >
-                            Create Account
+                            Créer mon compte
                             <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </Button>
                     </form>
 
-                    <p className="mt-8 text-center text-slate-600">
-                        Already have an account?{' '}
-                        <Link href="/login" className="text-indigo-600 font-semibold hover:text-indigo-700">
-                            Sign in
+                    <p className="mt-10 text-center text-slate-500 font-medium">
+                        Déjà un compte ?{' '}
+                        <Link href="/login" className="ai-gradient-text hover:opacity-80 transition-opacity">
+                            Se connecter
                         </Link>
                     </p>
                 </div>
@@ -259,3 +262,9 @@ export default function RegisterPage() {
         </div>
     );
 }
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => ({
+    props: {
+        ...(await serverSideTranslations(locale ?? 'fr', ['common'])),
+    },
+});
